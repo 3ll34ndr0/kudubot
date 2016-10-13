@@ -59,7 +59,8 @@ class Service(object):
     """
 
     help_description = {"en": "A Generic Service Interface",
-                        "de": "Eine Generische Dienstleistungsschnittstelle"}
+                        "de": "Eine Generische Dienstleistungsschnittstelle",
+			"es": "Una interface general de servicio"}
     """
     A dictionary containing help messages in various languages on the use of the service
     """
