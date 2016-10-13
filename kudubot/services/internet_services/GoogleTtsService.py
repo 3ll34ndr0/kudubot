@@ -50,7 +50,10 @@ class GoogleTtsService(Service):
                               "/say \"<text>\" [<language>]",
                         "de": "/sag\tEine text-to-speech Funktion\n"
                               "syntax:\n"
-                              "/sag \"<text>\" [<sprache>]"}
+                              "/sag \"<text>\" [<sprache>]",
+			"es": "/deci\tUna función de texto-a-audi\n"
+			      "syntaxis:\n"
+			      "/deci \"<texto>\" [<idioma>]"}
     """
     Help description for this service.
     """
@@ -112,7 +115,8 @@ class GoogleTtsService(Service):
     """
 
     say_keywords = {"say": "en",
-                    "sag": "de"}
+                    "sag": "de",
+		    "deci" :  "es"}
     """
     Language keywords for the say command
     """
