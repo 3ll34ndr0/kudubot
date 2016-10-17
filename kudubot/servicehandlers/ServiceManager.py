@@ -59,6 +59,7 @@ from kudubot.services.internet_services.WhatsappConverterService import Whatsapp
 from kudubot.services.simple_services.SimpleCommandsService import SimpleCommandsService
 from kudubot.services.simple_services.SimpleEqualsResponseService import SimpleEqualsResponseService
 from kudubot.services.simple_services.SimpleContainsResponseService import SimpleContainsResponseService
+from kudubot.services.local_services.AddActivity import AddActivity
 
 from kudubot.logger.PrintLogger import PrintLogger
 from kudubot.connection.generic.Message import Message
@@ -80,6 +81,7 @@ class ServiceManager(object):
                     HelpService,
                     MuterService,
                     ServiceSelectorService,
+		    AddActivity,
                     RestarterService,
                     ReminderService,
                     WeeklyReminderService,
@@ -92,19 +94,19 @@ class ServiceManager(object):
                     FootballInfoService,
                     WeatherService,
                     GoogleTtsService,
-                    TvdbService,
-                    CinemaService,
-                    ZkmKinoService,
-                    KitMensaService,
-                    EmailSenderService,
-                    ImageSenderService,
-                    RandomKeyGeneratorService,
-                    HelloWorldService,
+		    #TvdbService,
+		    CinemaService,
+		    #ZkmKinoService,
+		    #KitMensaService,
+		    #EmailSenderService,
+		    #ImageSenderService,
+		    #RandomKeyGeneratorService,
+		    #HelloWorldService,
                     AsciiArtService,
-                    SimpleCommandsService,
-                    SimpleEqualsResponseService,
-                    SimpleContainsResponseService,
-                    WhatsappConverterService
+		    #SimpleCommandsService,
+		    #SimpleEqualsResponseService,
+		    #SimpleContainsResponseService,
+		    #WhatsappConverterService
                     # ResetService,
                     # BotMuteService
                     ]
