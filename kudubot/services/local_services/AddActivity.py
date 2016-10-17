@@ -10,7 +10,6 @@ sys.path.append('/home/lean/arena/10cur4')
 from manager import ManageAppointments
 
 class AddActivity(Service):
-#RandomKeyGeneratorService(Service):
     """
     The RandomKeyGeneratorService Class that extends the generic Service class.
     The service sends a random key of specified length
