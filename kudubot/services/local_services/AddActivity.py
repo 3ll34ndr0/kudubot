@@ -22,10 +22,10 @@ class AddActivity(Service):
 
     help_description = {"en": "/addactivity\t creates a new activity\n"
                               "syntax:\n"
-			      "/addactivity actividad dd/mm/aa hh:mm",
+                              "/addactivity activity_name dd/mm/aa hh:mm",
                         "es": "/agregaractividad\tCrea una nueva actividad\n"
                               "uso (por ejemplo):\n"
-			      "/agregaractividad nombreActividad 24/10/16 12:30"}
+                              "/agregaractividad nombreActividad 24/10/16 12:30"}
     """
     Help description for this service.
     """
