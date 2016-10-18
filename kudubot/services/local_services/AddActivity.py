@@ -22,7 +22,7 @@ class AddActivity(Service):
 
     help_description = {"en": "/addactivity\t creates a new activity\n"
                               "syntax:\n"
-                              "/addactivity activity_name dd/mm/aa hh:mm",
+                              "/addactivity activity_name DD/MM/AAAA hh:mm",
                         "es": "/agregaractividad\tCrea una nueva actividad\n"
                               "uso (por ejemplo):\n"
                               "/agregaractividad nombreActividad 24/10/16 12:30"}
@@ -48,10 +48,16 @@ class AddActivity(Service):
         :param message: the message to process
         :return: None
         """
-        language, length = message.message_body.lower().split(" ", 1)
+        language, dayMonthYear_Hour = message.message_body.lower().split(" ", 1)
+        # TODO: Accept double spaces if present...
+        address, _ = message.get_individual_address().split("@",1)
+        # address in WA this is the
+        # telephoneNumber with the @s.whatsapp.net ...
+
         self.connection.last_used_language = self.add_activity[language]
 
-        reply = self.addActivity(int(length))
+        reply = self.addActivity(dayMonthYear_Hour, int(length))
+
         reply_message = self.generate_reply_message(message, "Add Activity", reply)
         self.send_text_message(reply_message)
 
@@ -66,13 +72,18 @@ class AddActivity(Service):
                 + " [1-9]{1}[0-9]*$"
         return re.search(re.compile(regex), message.message_body.lower())
 
-    def addActivity(self, length: int) -> str:
+    def addActivity(self, dayMonthYear_Hour: str, address: str) -> str:
         """
         Generates a random key of specified length using the alphabet specified as class variable
 
         :param length: the length of the keyphrase
         :return: the random key
         """
+        #TODO: Add locales support.
+        dayMonthYear, hour = dayMonthYear_Hour.split(" ",1)
+        ap = ManageAppointments(address)
+        ap.makeAppointment(activity,initHour):
+
         random_key = ""
         if length > 100:
             return "Sorry"
