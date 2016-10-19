@@ -12,7 +12,7 @@ import pytz
 from datetime import datetime
 
 from manager import ManageAppointments
-timezone = "America/Argentina/Cordoba" #TODO: Avoid hardcoded values
+tz = "America/Argentina/Cordoba" #TODO: Avoid hardcoded values
 class AddActivity(Service):
     """
     The RandomKeyGeneratorService Class that extends the generic Service class.
@@ -59,7 +59,7 @@ class AddActivity(Service):
         # telephoneNumber with the @s.whatsapp.net ...
 
         self.connection.last_used_language = self.add_activity[language]
-        self.connection.last_used_timezone
+        self.connection.last_used_timezone = tz
         reply = self.addActivity(activity, dayMonthYear_Hour, address)
 
         reply_message = self.generate_reply_message(message, "Add Activity", reply)
