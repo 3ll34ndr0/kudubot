@@ -8,6 +8,7 @@ from kudubot.connection.generic.Message import Message
 import sys
 sys.path.append('/home/lean/arena/10cur4')
 import parsedatetime as pdt
+import pytz
 from datetime import datetime
 
 from manager import ManageAppointments
