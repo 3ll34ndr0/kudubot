@@ -7,8 +7,11 @@ from kudubot.servicehandlers.Service import Service
 from kudubot.connection.generic.Message import Message
 import sys
 sys.path.append('/home/lean/arena/10cur4')
-from manager import ManageAppointments
+import parsedatetime as pdt
+from datetime import datetime
 
+from manager import ManageAppointments
+timezone = "America/Argentina/Cordoba" #TODO: Avoid hardcoded values
 class AddActivity(Service):
     """
     The RandomKeyGeneratorService Class that extends the generic Service class.
@@ -48,15 +51,15 @@ class AddActivity(Service):
         :param message: the message to process
         :return: None
         """
-        language, dayMonthYear_Hour = message.message_body.lower().split(" ", 1)
+        language, activity, dayMonthYear_Hour = message.message_body.lower().split(" ", 2)
         # TODO: Accept double spaces if present...
-        address, _ = message.get_individual_address().split("@",1)
+        address, _ = message.get_individual_address().split("@",1) #For WA
         # address in WA this is the
         # telephoneNumber with the @s.whatsapp.net ...
 
         self.connection.last_used_language = self.add_activity[language]
-
-        reply = self.addActivity(dayMonthYear_Hour, int(length))
+        self.connection.last_used_timezone
+        reply = self.addActivity(activity, dayMonthYear_Hour, address)
 
         reply_message = self.generate_reply_message(message, "Add Activity", reply)
         self.send_text_message(reply_message)
@@ -72,7 +75,7 @@ class AddActivity(Service):
                 + " [1-9]{1}[0-9]*$"
         return re.search(re.compile(regex), message.message_body.lower())
 
-    def addActivity(self, dayMonthYear_Hour: str, address: str) -> str:
+    def addActivity(self, activity: str, dayMonthYear_Hour: str, address: str) -> str:
         """
         Generates a random key of specified length using the alphabet specified as class variable
 
@@ -80,9 +83,11 @@ class AddActivity(Service):
         :return: the random key
         """
         #TODO: Add locales support.
-        dayMonthYear, hour = dayMonthYear_Hour.split(" ",1)
-        ap = ManageAppointments(address)
-        ap.makeAppointment(activity,initHour):
+        c = pdt.Constants(localeID=self.last_used_language, usePyICU=False)
+        p = pdt.Calendar(c)
+        initHour = p.parseDT(dayMonthYear_Hour, tzinfo=timezone(self.connection.last_used_timezone))
+        ap = ManageAppointments(address, activity,initHour)
+#        ap.makeAppointment(activity,initHour):
 
         random_key = ""
         if length > 100:
