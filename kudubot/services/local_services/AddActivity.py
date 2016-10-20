@@ -2,6 +2,7 @@
 import re
 import random
 import string
+from kudubot.logger.PrintLogger import PrintLogger
 
 from kudubot.servicehandlers.Service import Service
 from kudubot.connection.generic.Message import Message
@@ -61,7 +62,7 @@ class AddActivity(Service):
         self.connection.last_used_language = self.add_activity[language]
         self.connection.last_used_timezone = tz
         reply = self.addActivity(activity, dayMonthYear_Hour, address)
-
+#        reply = activity
         reply_message = self.generate_reply_message(message, "Add Activity", reply)
         self.send_text_message(reply_message)
 
@@ -73,7 +74,7 @@ class AddActivity(Service):
         :return: True if input is valid, False otherwise
         """
         regex = "^" + Service.regex_string_from_dictionary_keys([AddActivity.add_activity]) \
-                + " [1-9]{1}[0-9]*$"
+                + ".*$"
         return re.search(re.compile(regex), message.message_body.lower())
 
     def addActivity(self, activity: str, dayMonthYear_Hour: str, address: str) -> str:
@@ -84,15 +85,12 @@ class AddActivity(Service):
         :return: the random key
         """
         #TODO: Add locales support.
-        c = pdt.Constants(localeID=self.last_used_language, usePyICU=False)
+        c = pdt.Constants(localeID=self.connection.last_used_language, usePyICU=False)
         p = pdt.Calendar(c)
-        initHour = p.parseDT(dayMonthYear_Hour, tzinfo=timezone(self.connection.last_used_timezone))
+        initHour,_ = p.parseDT(dayMonthYear_Hour, tzinfo=pytz.timezone(self.connection.last_used_timezone))
+        PrintLogger.print(type(initHour))
+        PrintLogger.print(dir(initHour))
         ap = ManageAppointments(address, activity,initHour)
 #        ap.makeAppointment(activity,initHour):
 
-        random_key = ""
-        if length > 100:
-            return "Sorry"
-        for x in range(0, length):
-            random_key += random.choice(self.alphabet)
-        return random_key
+        return "Actividad creada..." 
