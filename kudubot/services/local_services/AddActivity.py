@@ -11,9 +11,15 @@ sys.path.append('/home/lean/arena/10cur4')
 import parsedatetime as pdt
 import pytz
 from datetime import datetime
+tz = "America/Argentina/Cordoba" #TODO: Avoid hardcoded values
+from pytz import country_timezones
+# Guardo aca algunos métodos de pytz pa no olvidarme.
+# country_timezones('ar') tira una lista de los horarios de cada pais, en este caso Argentina.
+#horarioCordoba = pytz.timezone('America/Argentina/Cordoba')
+#horarioCordoba.zone
 
 from manager import ManageAppointments
-tz = "America/Argentina/Cordoba" #TODO: Avoid hardcoded values
+
 class AddActivity(Service):
     """
     The RandomKeyGeneratorService Class that extends the generic Service class.
@@ -57,12 +63,11 @@ class AddActivity(Service):
         # TODO: Accept double spaces if present...
         address, _ = message.get_individual_address().split("@",1) #For WA
         # address in WA this is the
-        # telephoneNumber with the @s.whatsapp.net ...
+        #be telephoneNumber with the @s.whatsapp.net ...
 
         self.connection.last_used_language = self.add_activity[language]
-        self.connection.last_used_timezone = tz
+#        self.connection.last_used_timezone = tz
         reply = self.addActivity(activity, dayMonthYear_Hour, address)
-#        reply = activity
         reply_message = self.generate_reply_message(message, "Add Activity", reply)
         self.send_text_message(reply_message)
 
@@ -85,12 +90,16 @@ class AddActivity(Service):
         :return: the random key
         """
         #TODO: Add locales support.
-        c = pdt.Constants(localeID=self.connection.last_used_language, usePyICU=False)
+        c = pdt.Constants(localeID=self.connection.last_used_language, usePyICU=True)
         p = pdt.Calendar(c)
-        initHour,_ = p.parseDT(dayMonthYear_Hour, tzinfo=pytz.timezone(self.connection.last_used_timezone))
+        initHour,_ = p.parseDT(dayMonthYear_Hour, tzinfo=pytz.timezone(tz))
         PrintLogger.print(type(initHour))
-        PrintLogger.print(dir(initHour))
+        PrintLogger.print(initHour)
+        PrintLogger.print(self.connection.last_used_language)
+        PrintLogger.print(pytz.timezone(tz))
         ap = ManageAppointments(address, activity,initHour)
 #        ap.makeAppointment(activity,initHour):
+        # I yet don't konw why, but the EST timezone label apears..., so I'll strip it
+	return "Actividad \"{}\" creada para el {} ...".format(activity,initHour.strftime("%c").rstrip('EST')) #TODO: translate
 
-        return "Actividad creada..." 
+
