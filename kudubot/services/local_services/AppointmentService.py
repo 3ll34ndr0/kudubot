@@ -65,7 +65,7 @@ class AppointmentService(Service):
                                            self.datetimeConvert(dayMonthYear_Hour), address)
         if message.message_body.lower().split(" ", 2)[1] == 'almacen':
             language, _, databaseName = message.message_body.lower().split(" ", 2)
-            reply = self.setup(databaseName, None, address)
+            reply = self.setup(databaseName, address)
 
         else:
             language, activity, dayMonthYear_Hour = message.message_body.lower().split(" ", 2)
