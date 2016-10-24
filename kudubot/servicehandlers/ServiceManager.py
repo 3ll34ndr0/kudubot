@@ -60,6 +60,8 @@ from kudubot.services.simple_services.SimpleCommandsService import SimpleCommand
 from kudubot.services.simple_services.SimpleEqualsResponseService import SimpleEqualsResponseService
 from kudubot.services.simple_services.SimpleContainsResponseService import SimpleContainsResponseService
 from kudubot.services.local_services.AddActivity import AddActivity
+from kudubot.services.local_services.AppointmentService import AppointmentService
+
 
 from kudubot.logger.PrintLogger import PrintLogger
 from kudubot.connection.generic.Message import Message
@@ -78,7 +80,8 @@ class ServiceManager(object):
     """
 
     all_services = [
-		    AddActivity,
+		    AppointmentService,
+            #AddActivity,
 		    #RestarterService,
                     ReminderService,
                     WeeklyReminderService,
