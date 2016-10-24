@@ -66,7 +66,7 @@ class AppointmentService(Service):
             language, _, databaseNamea = message.message_body.lower().split(" ", 2)
             reply = self.setup(activity, datetimeConvert(dayMonthYear_Hour), address)
 
-        elif:
+        else:
             language, activity, dayMonthYear_Hour = message.message_body.lower().split(" ", 2)
             reply = self.addActivity(activity, datetimeConvert(dayMonthYear_Hour), address)
         # TODO: Accept double spaces if present...
