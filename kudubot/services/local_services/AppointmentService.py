@@ -42,7 +42,7 @@ class AppointmentService(Service):
     """
 
     appointment = {"/appointment": "en",
-                    "/turno ": "es",
+                    "/turno": "es",
                     "/reservar": "es"}
     """
     Keywords for the /appointment command
@@ -79,7 +79,7 @@ class AppointmentService(Service):
 
         self.connection.last_used_language = self.appointment[language]
 #        self.connection.last_used_timezone = tz
-        reply_message = self.generate_reply_message(message, "Add Activity", reply)
+        reply_message = self.generate_reply_message(message, "Appointments...", reply)
         self.send_text_message(reply_message)
 
     @staticmethod
