@@ -11,7 +11,7 @@ import sys
 sys.path.append('/home/lean/arena/10cur4')
 import parsedatetime as pdt
 import pytz
-from datetime import datetime
+import datetime
 tz = "America/Argentina/Cordoba" #TODO: Avoid hardcoded values
 from pytz import country_timezones
 # Guardo aca algunos métodos de pytz pa no olvidarme.
