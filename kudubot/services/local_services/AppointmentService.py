@@ -64,8 +64,8 @@ class AppointmentService(Service):
             reply = self.createAppointment(activity,
                                            self.datetimeConvert(dayMonthYear_Hour), address)
         if message.message_body.lower().split(" ", 2)[1] == 'almacen':
-            language, _, databaseNamea = message.message_body.lower().split(" ", 2)
-            reply = self.setup(activity, self.datetimeConvert(dayMonthYear_Hour), address)
+            language, _, databaseName = message.message_body.lower().split(" ", 2)
+            reply = self.setup(databaseName, None, address)
 
         else:
             language, activity, dayMonthYear_Hour = message.message_body.lower().split(" ", 2)
@@ -135,10 +135,10 @@ class AppointmentService(Service):
         # I yet don't konw why, but the EST timezone label apears..., so I'll strip it
         return "Actividad \"{}\" creada para el {} ...".format(activity,initHour.strftime("%c").rstrip('EST')) #TODO: translate
 
-    def setup(self, databaseName: str, defaultActivity: str,  address: str) -> str:
+    def setup(self, databaseName: str, address: str) -> str:
         if Authenticator(self.connection.identifier).is_from_admin(address):
             try:
-                ManageAppointments(address,activity,initHour).setup(databaseName)
+                ManageAppointments(address).setup(databaseName)
                 return "Done!"
             except:
                 return "Something wen't wrong"
