@@ -60,7 +60,7 @@ class AppointmentService(Service):
 
         if message.message_body.lower().split(" ", 2)[1] == 'nuevo':
             language, _, activity, dayMonthYear_Hour = message.message_body.lower().split(" ", 3)
-            PrintLogger.print(type(dayMontYear_Hour))
+            PrintLogger.print(type(dayMonthYear_Hour))
             reply = self.createAppointment(activity,
                                            self.datetimeConvert(dayMonthYear_Hour), address)
         if message.message_body.lower().split(" ", 2)[1] == 'almacen':
