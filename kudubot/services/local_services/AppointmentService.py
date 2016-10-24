@@ -73,7 +73,7 @@ class AppointmentService(Service):
         # address in WA this is the
         #be telephoneNumber with the @s.whatsapp.net ...
 
-        self.connection.last_used_language = self.add_activity[language]
+        self.connection.last_used_language = self.appointment[language]
 #        self.connection.last_used_timezone = tz
         reply_message = self.generate_reply_message(message, "Add Activity", reply)
         self.send_text_message(reply_message)
@@ -85,7 +85,7 @@ class AppointmentService(Service):
 
         :return: True if input is valid, False otherwise
         """
-        regex = "^" + Service.regex_string_from_dictionary_keys([AddActivity.add_activity]) \
+        regex = "^" + Service.regex_string_from_dictionary_keys([AppointmentService.appointment]) \
                 + ".*$"
         return re.search(re.compile(regex), message.message_body.lower())
     def makeAppointment(self, activity: str, dayMonthYear_Hour: str, address: str) -> str:
