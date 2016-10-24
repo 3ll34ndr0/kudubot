@@ -122,15 +122,15 @@ class AppointmentService(Service):
         :return: the random key
         """
         #TODO: Add locales support.
-        c = pdt.Constants(localeID=self.connection.last_used_language, usePyICU=True)
-        p = pdt.Calendar(c)
-        PrintLogger.print(type(dayMonthYear_Hour))
-        initHour,_ = p.parseDT(dayMonthYear_Hour, tzinfo=pytz.timezone(tz))
-        PrintLogger.print(type(initHour))
-        PrintLogger.print(initHour)
-        PrintLogger.print(self.connection.last_used_language)
-        PrintLogger.print(pytz.timezone(tz))
-        ManageAppointments(address, activity,initHour).createAppointment()
+        #c = pdt.Constants(localeID=self.connection.last_used_language, usePyICU=True)
+        #p = pdt.Calendar(c)
+        #PrintLogger.print(type(dayMonthYear_Hour))
+        #initHour,_ = p.parseDT(dayMonthYear_Hour, tzinfo=pytz.timezone(tz))
+        #PrintLogger.print(type(initHour))
+        #PrintLogger.print(initHour)
+        #PrintLogger.print(self.connection.last_used_language)
+        #PrintLogger.print(pytz.timezone(tz))
+        ManageAppointments(address, activity,dayMonthYear_hour).createAppointment()
 #        ap.makeAppointment(activity,initHour):
         # I yet don't konw why, but the EST timezone label apears..., so I'll strip it
         return "Actividad \"{}\" creada para el {} ...".format(activity,initHour.strftime("%c").rstrip('EST')) #TODO: translate
