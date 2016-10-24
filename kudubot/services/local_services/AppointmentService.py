@@ -66,7 +66,7 @@ class AppointmentService(Service):
         if message.message_body.lower().split(" ", 2)[1] == 'almacen':
             language, _, databaseName = message.message_body.lower().split(" ", 2)
             if Authenticator(self.connection.identifier).is_from_admin(message):
-                reply = self.setup(databaseName, address)
+                reply = self.setupDB(databaseName, address)
             else:
                 reply = "UR Not allowed 2 do this"
 
@@ -138,7 +138,7 @@ class AppointmentService(Service):
         # I yet don't konw why, but the EST timezone label apears..., so I'll strip it
         return "Actividad \"{}\" creada para el {} ...".format(activity,initHour.strftime("%c").rstrip('EST')) #TODO: translate
 
-    def setup(self, databaseName: str, address: str) -> str:
+    def setupDB(self, databaseName: str, address: str) -> str:
         return ManageAppointments(address).setup(databaseName)  #exeption
                                                                 #handled inside method
 
