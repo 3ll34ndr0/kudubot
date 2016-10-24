@@ -59,7 +59,7 @@ from kudubot.services.internet_services.WhatsappConverterService import Whatsapp
 from kudubot.services.simple_services.SimpleCommandsService import SimpleCommandsService
 from kudubot.services.simple_services.SimpleEqualsResponseService import SimpleEqualsResponseService
 from kudubot.services.simple_services.SimpleContainsResponseService import SimpleContainsResponseService
-from kudubot.services.local_services.AddActivity import AddActivity
+#from kudubot.services.local_services.AddActivity import AddActivity
 from kudubot.services.local_services.AppointmentService import AppointmentService
 
 
