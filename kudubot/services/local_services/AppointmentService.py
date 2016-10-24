@@ -139,10 +139,7 @@ class AppointmentService(Service):
         return "Actividad \"{}\" creada para el {} ...".format(activity,initHour.strftime("%c").rstrip('EST')) #TODO: translate
 
     def setup(self, databaseName: str, address: str) -> str:
-            try:
-                ManageAppointments(address).setup(databaseName)
-                return "Done!"
-            except:
-                return "Something wen't wrong"
+        return ManageAppointments(address).setup(databaseName)  #exeption
+                                                                #handled inside method
 
 
