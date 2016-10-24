@@ -130,7 +130,7 @@ class AppointmentService(Service):
         #PrintLogger.print(initHour)
         #PrintLogger.print(self.connection.last_used_language)
         #PrintLogger.print(pytz.timezone(tz))
-        ManageAppointments(address, activity,dayMonthYear_hour).createAppointment()
+        ManageAppointments(address, activity,dayMonthYear_Hour).createAppointment()
 #        ap.makeAppointment(activity,initHour):
         # I yet don't konw why, but the EST timezone label apears..., so I'll strip it
         return "Actividad \"{}\" creada para el {} ...".format(activity,initHour.strftime("%c").rstrip('EST')) #TODO: translate
