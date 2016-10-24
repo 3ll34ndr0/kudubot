@@ -65,7 +65,10 @@ class AppointmentService(Service):
                                            self.datetimeConvert(dayMonthYear_Hour), address)
         if message.message_body.lower().split(" ", 2)[1] == 'almacen':
             language, _, databaseName = message.message_body.lower().split(" ", 2)
-            reply = self.setup(databaseName, address)
+            if Authenticator(self.connection.identifier).is_from_admin(message):
+                reply = self.setup(databaseName, address)
+            else:
+                reply = "UR Not allowed 2 do this"
 
         else:
             language, activity, dayMonthYear_Hour = message.message_body.lower().split(" ", 2)
@@ -136,13 +139,10 @@ class AppointmentService(Service):
         return "Actividad \"{}\" creada para el {} ...".format(activity,initHour.strftime("%c").rstrip('EST')) #TODO: translate
 
     def setup(self, databaseName: str, address: str) -> str:
-        if Authenticator(self.connection.identifier).is_from_admin(address):
             try:
                 ManageAppointments(address).setup(databaseName)
                 return "Done!"
             except:
                 return "Something wen't wrong"
-        else:
-            return "You are not allowed to do this"
 
 
