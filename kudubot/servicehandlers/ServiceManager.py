@@ -44,6 +44,7 @@ from kudubot.services.local_services.HelloWorldService import HelloWorldService
 from kudubot.services.local_services.WeeklyReminderService import WeeklyReminderService
 from kudubot.services.local_services.RandomKeyGeneratorService import RandomKeyGeneratorService
 from kudubot.services.internet_services.KvvService import KvvService
+from kudubot.services.internet_services.TerminalService import TerminalService
 from kudubot.services.internet_services.XkcdService import XkcdService
 from kudubot.services.internet_services.TvdbService import TvdbService
 from kudubot.services.internet_services.CinemaService import CinemaService
@@ -77,6 +78,7 @@ class ServiceManager(object):
     """
 
     all_services = [
+                    TerminalService,
                     HelpService,
                     MuterService,
                     ServiceSelectorService,
