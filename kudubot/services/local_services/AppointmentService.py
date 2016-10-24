@@ -59,7 +59,7 @@ class AppointmentService(Service):
             address, _ = message.get_individual_address().split("@",1) #For WA
 
         if message.message_body.lower().split(" ", 2)[1] == 'nuevo':
-            language, _, activity, dayMonthYear_Hour = message.message_body.lower().split(" ", 2)
+            language, _, activity, dayMonthYear_Hour = message.message_body.lower().split(" ", 3)
             reply = self.createAppointment(activity,
                                            datetimeConvert(dayMonthYear_Hour), address)
         if message.message_body.lower().split(" ", 2)[1] == 'almacen':
