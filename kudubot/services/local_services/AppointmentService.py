@@ -110,7 +110,7 @@ class AppointmentService(Service):
         return initHour
 
 
-    def addActivity(self, activity: str, dayMonthYear_Hour: str, address: str) -> str:
+    def createAppointment(self, activity: str, dayMonthYear_Hour: str, address: str) -> str:
         """
         Bla bla bla bla blaaaaa...
 
