@@ -58,7 +58,7 @@ destinos = {'villaguay': """S̲A̲L̲I̲D̲A̲ ̲L̲L̲E̲G̲A̲D̲A̲ ̲E̲M̲P
 21:00  22:15 *PALMARES* _lunes a viernes_
 21:43  22:35 *ZENIT* 
 22:20  23:30 *PALMARES*
-""", '*SAN JOSE*': """SALIDA LLEGADA EMPRESA OBSERVAC.
+""", 'san jose': """SALIDA LLEGADA EMPRESA OBSERVAC.
 23:10  00:55 *JOVI BUS*
 23:25  01:05 *RIO URUGUAY*
 23:25  01:05 *RIO URUGUAY* _salvo sabados_
