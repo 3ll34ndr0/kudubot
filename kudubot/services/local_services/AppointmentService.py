@@ -63,16 +63,15 @@ class AppointmentService(Service):
             PrintLogger.print(type(dayMonthYear_Hour))
             reply = self.createAppointment(activity,
                                            self.datetimeConvert(dayMonthYear_Hour), address)
-        if message.message_body.lower().split(" ", 2)[1] == 'almacen':
+        elif message.message_body.lower().split(" ", 2)[1] == 'almacen':
             language, _, databaseName = message.message_body.lower().split(" ", 2)
             if Authenticator(self.connection.identifier).is_from_admin(message):
                 reply = self.setupDB(databaseName, address)
             else:
                 reply = "UR Not allowed 2 do this"
-
         else:
             language, activity, dayMonthYear_Hour = message.message_body.lower().split(" ", 2)
-            reply = self.addActivity(activity, self.datetimeConvert(dayMonthYear_Hour), address)
+            reply = self.makeAppointment(activity, self.datetimeConvert(dayMonthYear_Hour), address)
         # TODO: Accept double spaces if present...
         # address in WA this is the
         #be telephoneNumber with the @s.whatsapp.net ...
@@ -124,17 +123,8 @@ class AppointmentService(Service):
         :param address: the telephone number of the person who sent the message
         :return: the random key
         """
-        #TODO: Add locales support.
-        #c = pdt.Constants(localeID=self.connection.last_used_language, usePyICU=True)
-        #p = pdt.Calendar(c)
         #PrintLogger.print(type(dayMonthYear_Hour))
-        #initHour,_ = p.parseDT(dayMonthYear_Hour, tzinfo=pytz.timezone(tz))
-        #PrintLogger.print(type(initHour))
-        #PrintLogger.print(initHour)
-        #PrintLogger.print(self.connection.last_used_language)
-        #PrintLogger.print(pytz.timezone(tz))
         ManageAppointments(address, activity,initHour).createAppointment()
-#        ap.makeAppointment(activity,initHour):
         # I yet don't konw why, but the EST timezone label apears..., so I'll strip it
         return "Actividad \"{}\" creada para el {} ...".format(activity,initHour.strftime("%c").rstrip('EST')) #TODO: translate
 
