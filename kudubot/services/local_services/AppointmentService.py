@@ -91,7 +91,7 @@ class AppointmentService(Service):
         regex = "^" + Service.regex_string_from_dictionary_keys([AppointmentService.appointment]) \
                 + ".*$"
         return re.search(re.compile(regex), message.message_body.lower())
-    def makeAppointment(self, activity: str, dayMonthYear_Hour: str, address: str) -> str:
+    def makeAppointment(self, activity: str, initHour: datetime.datetime, address: str) -> str:
         """
         Will make an appointment for the address at the time for given
         activity.
@@ -113,7 +113,7 @@ class AppointmentService(Service):
         return initHour
 
 
-    def createAppointment(self, activity: str, initHour: str, address: str) -> str:
+    def createAppointment(self, activity: str, initHour: datetime.datetime, address: str) -> str:
         """
         Bla bla bla bla blaaaaa...
 
