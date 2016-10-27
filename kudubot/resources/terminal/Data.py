@@ -1,4 +1,4 @@
-destinos = {'villaguay': """S̲A̲L̲I̲D̲A̲ ̲L̲L̲E̲G̲A̲D̲A̲ ̲E̲M̲P̲R̲E̲S̲A̲
+destinos = {'villaguay': """SALIDA LLEGADA EMPRESA
 23:55  01:55 *FLECHA BUS* 
 00:35  02:35 *RAPIDO TATA*
 00:35  02:35 *RAPIDO TATA* _salvo sabados_
