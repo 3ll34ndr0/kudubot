@@ -3,6 +3,9 @@ import re
 import random
 import string
 from kudubot.logger.PrintLogger import PrintLogger
+from kudubot.config.LocalConfigChecker import LocalConfigChecker
+import os
+import sqlite3
 
 from kudubot.servicehandlers.Service import Service
 from kudubot.connection.generic.Message import Message
@@ -102,7 +105,7 @@ class AppointmentService(Service):
         :param address: the telephone number of the person who sent the message
         :return: the random key
         """
-        ManageAppointments(address, activity,initHour).makeAppointment()
+        return ManageAppointments(address, activity,initHour).makeAppointment(address,activity,initHour)
 
     def datetimeConvert(self,dayMonthYear_Hour: str) -> datetime.datetime:
         #Will convert human date time to datetime object:
@@ -123,10 +126,56 @@ class AppointmentService(Service):
         :param address: the telephone number of the person who sent the message
         :return: the random key
         """
-        #PrintLogger.print(type(dayMonthYear_Hour))
+	#TODO:Check if the current address has been registered...
+
+	if address is not in addressbook:
+		createUserRegisterDB(database=None,phone=None,name=None, activity=None, credit=None, vCard=None, expDate=None)
+	#
         ManageAppointments(address, activity,initHour).createAppointment()
         # I yet don't konw why, but the EST timezone label apears..., so I'll strip it
         return "Actividad \"{}\" creada para el {} ...".format(activity,initHour.strftime("%c").rstrip('EST')) #TODO: translate
+
+
+        def isRegisteredUser(self,address):
+        """
+        Will check if the sender is not registered as a user.  
+        """
+
+        addressbook = os.path.join(LocalConfigChecker.contacts_directory, "whatsapp", "addressbook.db")
+        """
+        The addressbook database file path
+        """
+	if ManageAppointments(address).getUserRegister() is not None:
+		return None
+
+        try:
+            db = sqlite3.connect(addressbook)
+            cursor = db.cursor()
+	    t = (address,)
+            cursor.execute(
+            '''SELECT * FROM Contacts WHERE adress=?''', t)
+            if cursor.fetchone() is None:
+		    message = "Message: {}, ".format(horariosJSON)
+            if description is not None:
+            cursor.execute(
+            '''UPDATE activityCalendar SET description = ? WHERE act = ? ''', (description, activity))
+            message += "{}, ".format(description)
+        if vCalendar is not None:
+            cursor.execute(
+            '''UPDATE activityCalendar SET vCalendar = ? WHERE act = ? ''', (vCalendar, activity))
+            message += "{}, ".format(vCalendar) 
+        message += "added to {}".format(activity) 
+        db.commit()
+    except sqlite3.IntegrityError as e:
+        db.rollback()
+        raise e
+    except sqlite3.OperationalError as e:
+        db.rollback()
+        raise e
+    finally:
+        cursor.close()
+
+
 
     def setupDB(self, databaseName: str, address: str) -> str:
         return ManageAppointments(address).setup(databaseName)  #exeption
