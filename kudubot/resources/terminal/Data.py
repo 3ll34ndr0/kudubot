@@ -410,5 +410,34 @@ SALIDA LLEGADA EMPRESA
 23:25  03:25   *RIO URUGUAY* _salvo sabados_
 07:00  10:50   *RIO URUGUAY* 
 12:20  15:55   *RAPIDO TATA* 
-""",
-}
+""", '#Retiro-Concordia': """SALIDA LLEGADA EMPRESA
+00:15 06:45    *RÁPIDO SAN JOSÉ* _Semi Cama_
+00:50 06:20    *FLECHA BUS* _Semi Cama_
+01:15 09:05    *RÁPIDO SAN JOSÉ* _Semi Cama_
+05:00 12:30    *RÁPIDO SAN JOSÉ* _Comun con aire_
+06:30 13:15    *NUEVO EXPRESO-FLECHA BUS* _Semi Cama_
+08:30 14:50    *FLECHA BUS* _Cama_
+08:30 14:50    *FLECHA BUS* _Semi Cama_
+10:00 15:50    *FLECHA BUS* _Semi Cama_
+10:00 15:50    *FLECHA BUS* _Cama_
+12:15 18:35    *RÁPIDO SAN JOSÉ* _Semi Cama_
+12:15 18:35    *RÁPIDO SAN JOSÉ* _Cama_
+14:15 19:45    *VÍA BARILOCHE* _Cama_
+14:30 20:25    *FLECHA BUS* _Semi Cama_
+15:00 21:00    *EL RÁPIDO ARGENTINO* _Coche Cama_
+15:30 21:30    *CRUCERO DEL NORTE* _Cama Ejecutivo_
+15:30 21:30    *NUEVO EXPRESO - FLECHA BUS* _Cama_
+16:00 21:55    *FLECHA BUS* _Cama Ejecutivo_
+16:00 21:55    *FLECHA BUS* _Semi _Cama_
+18:30 00:40    *FLECHA BUS* _Semi Cama_
+18:35 00:30    *RÁPIDO SAN JOSÉ* _Semi Cama_
+18:35 00:30    *RÁPIDO SAN JOSÉ* _Cama Ejecutivo_
+20:00 01:45    *FLECHA BUS* _Semi Cama_
+20:00 01:45    *FLECHA BUS* _Cama_
+21:15 03:00    *EXPRESO SINGER* _Semi Plus_
+21:15 03:00    *EXPRESO SINGER* _Semi Cama_
+21:30 03:00    *TIGRE IGUAZU* _Semi Cama_
+21:30 03:00    *TIGRE IGUAZU* _Cama_
+23:30 05:15    *FLECHA BUS* _Semi Cama_
+23:30 05:15    *FLECHA BUS* _Cama Ejecutivo_
+""", }
