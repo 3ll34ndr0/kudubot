@@ -410,7 +410,7 @@ SALIDA LLEGADA EMPRESA
 23:25  03:25   *RIO URUGUAY* _salvo sabados_
 07:00  10:50   *RIO URUGUAY* 
 12:20  15:55   *RAPIDO TATA* 
-""", '#Retiro-Concordia': """SALIDA LLEGADA EMPRESA
+""", '#retiro-concordia': """SALIDA LLEGADA EMPRESA
 00:15 06:45    *RÁPIDO SAN JOSÉ* _Semi Cama_
 00:50 06:20    *FLECHA BUS* _Semi Cama_
 01:15 09:05    *RÁPIDO SAN JOSÉ* _Semi Cama_
