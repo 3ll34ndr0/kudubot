@@ -138,34 +138,27 @@ class AppointmentService(Service):
 
         def isRegisteredUser(self,address):
         """
-        Will check if the sender is not registered as a user.  
+        Will check if the sender is not registered as a user.
         """
 
         addressbook = os.path.join(LocalConfigChecker.contacts_directory, "whatsapp", "addressbook.db")
         """
         The addressbook database file path
         """
-	if ManageAppointments(address).getUserRegister() is not None:
-		return None
-
+	if ManageAppointments(address).getUserRegister() is None:
         try:
             db = sqlite3.connect(addressbook)
             cursor = db.cursor()
-	    t = (address,)
+            t = (address+'@s.whatsapp.net',)
             cursor.execute(
             '''SELECT * FROM Contacts WHERE adress=?''', t)
-            if cursor.fetchone() is None:
-		    message = "Message: {}, ".format(horariosJSON)
-            if description is not None:
-            cursor.execute(
-            '''UPDATE activityCalendar SET description = ? WHERE act = ? ''', (description, activity))
-            message += "{}, ".format(description)
-        if vCalendar is not None:
-            cursor.execute(
-            '''UPDATE activityCalendar SET vCalendar = ? WHERE act = ? ''', (vCalendar, activity))
-            message += "{}, ".format(vCalendar) 
-        message += "added to {}".format(activity) 
-        db.commit()
+            phone, name = cursor.fetchone()
+            if phone is None:
+                return "Error: Number not found..."
+            else:
+                ManageAppointments(address,
+                                   activity,initHour).createUserRegisterDB()
+
     except sqlite3.IntegrityError as e:
         db.rollback()
         raise e
