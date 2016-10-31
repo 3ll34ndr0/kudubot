@@ -105,6 +105,9 @@ class AppointmentService(Service):
         :param address: the telephone number of the person who sent the message
         :return: the random key
         """
+        # If address is not in appointment database, it will copy it from the bot's database
+        print(self.isRegisteredUser(address))
+        # Do your job
         return ManageAppointments(address, activity,initHour).makeAppointment(address,activity,initHour)
 
     def datetimeConvert(self,dayMonthYear_Hour: str) -> datetime.datetime:
@@ -128,15 +131,13 @@ class AppointmentService(Service):
         """
 	#TODO:Check if the current address has been registered...
 
-	if address is not in addressbook:
-		createUserRegisterDB(database=None,phone=None,name=None, activity=None, credit=None, vCard=None, expDate=None)
 	#
         ManageAppointments(address, activity,initHour).createAppointment()
         # I yet don't konw why, but the EST timezone label apears..., so I'll strip it
         return "Actividad \"{}\" creada para el {} ...".format(activity,initHour.strftime("%c").rstrip('EST')) #TODO: translate
 
 
-        def isRegisteredUser(self,address):
+    def isRegisteredUser(self,address: str) -> str:
         """
         Will check if the sender is not registered as a user.
         """
@@ -145,33 +146,35 @@ class AppointmentService(Service):
         """
         The addressbook database file path
         """
-	if ManageAppointments(address).getUserRegister() is None:
-        try:
-            db = sqlite3.connect(addressbook)
-            cursor = db.cursor()
-            t = (address+'@s.whatsapp.net',)
-            cursor.execute(
-            '''SELECT * FROM Contacts WHERE adress=?''', t)
-            phone, name = cursor.fetchone()
-            if phone is None:
-                return "Error: Number not found..."
-            else:
-                ManageAppointments(address,
-                                   activity,initHour).createUserRegisterDB()
 
-    except sqlite3.IntegrityError as e:
-        db.rollback()
-        raise e
-    except sqlite3.OperationalError as e:
-        db.rollback()
-        raise e
-    finally:
-        cursor.close()
+        if ManageAppointments(address).getUserRegister() is None:
+            try:
+                db = sqlite3.connect(addressbook)
+                cursor = db.cursor()
+                t = (address+'@s.whatsapp.net',)
+                cursor.execute(
+                '''SELECT * FROM Contacts WHERE address=?''', t)
+                phone, name = cursor.fetchone()
+                if phone is None:
+                    reply = "Error: Number not found..."
+                else:
+                    reply = ManageAppointments(address).createUserRegisterDB(address,name)
 
+            except sqlite3.IntegrityError as e:
+                db.rollback()
+                raise e
+
+            except sqlite3.OperationalError as e:
+                db.rollback()
+                raise e
+
+            finally:
+                cursor.close()
+
+            return reply
 
 
     def setupDB(self, databaseName: str, address: str) -> str:
         return ManageAppointments(address).setup(databaseName)  #exeption
                                                                 #handled inside method
-
 
