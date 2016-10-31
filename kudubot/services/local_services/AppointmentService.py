@@ -44,11 +44,11 @@ class AppointmentService(Service):
     Help description for this service.
     """
 
-    appointment = {"/appointment": "en",
-                    "/turno": "es",
-                    "/reservar": "es"}
+    appointment = {"appointment": "en",
+                    "turno": "es",
+                    "reservar": "es"}
     """
-    Keywords for the /appointment command
+    Keywords for the appointment command
     """
 
     def process_message(self, message: Message) -> None:
