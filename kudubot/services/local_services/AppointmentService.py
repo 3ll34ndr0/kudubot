@@ -14,7 +14,7 @@ import sys
 sys.path.append('/home/lean/arena/10cur4')
 import parsedatetime as pdt
 import pytz
-import datetime
+from datetime import datetime, timedelta
 tz = "America/Argentina/Cordoba" #TODO: Avoid hardcoded values
 from pytz import country_timezones
 # Guardo aca algunos métodos de pytz pa no olvidarme.
@@ -45,8 +45,9 @@ class AppointmentService(Service):
     """
 
     appointment = {"appointment": "en",
-                    "turno": "es",
-                    "reservar": "es"}
+                   "turno"      : "es",
+                   "turnos"     : "es",
+                   "reservar"   : "es"}
     """
     Keywords for the appointment command
     """
@@ -58,12 +59,21 @@ class AppointmentService(Service):
         :param message: the message to process
         :return: None
         """
+        # Get the phonenumber if using what the fuck:
         if self.connection.identifier == 'whatsapp':
             address, _ = message.get_individual_address().split("@",1) #For WA
+        else:
+            pass
+            #TODO: Take into account Telegram ...
 
-        if message.message_body.lower().split(" ", 2)[1] == 'nuevo':
+        if len(message.message_body.lower().split(" ",1)) == 1:
+            #Should give info about appointments for today and tomorrow...
+            reply = str(self.giveInfo(address))
+        elif message.message_body.lower().split(" ",1)[0] == 'turno': # TODO:Avoid hardcoded Language
+            language, date = message.message_body.lower().split(" ",1)
+            reply = self.giveInfo(address, date)
+        elif message.message_body.lower().split(" ", 2)[1] == 'nuevo':# TODO:Avoid hardcoded Language
             language, _, activity, dayMonthYear_Hour = message.message_body.lower().split(" ", 3)
-            PrintLogger.print(type(dayMonthYear_Hour))
             reply = self.createAppointment(activity,
                                            self.datetimeConvert(dayMonthYear_Hour), address)
         elif message.message_body.lower().split(" ", 2)[1] == 'almacen':
@@ -94,7 +104,7 @@ class AppointmentService(Service):
         regex = "^" + Service.regex_string_from_dictionary_keys([AppointmentService.appointment]) \
                 + ".*$"
         return re.search(re.compile(regex), message.message_body.lower())
-    def makeAppointment(self, activity: str, initHour: datetime.datetime, address: str) -> str:
+    def makeAppointment(self, activity: str, initHour: datetime, address: str) -> str:
         """
         Will make an appointment for the address at the time for given
         activity.
@@ -110,7 +120,7 @@ class AppointmentService(Service):
         # Do your job
         return ManageAppointments(address, activity,initHour).makeAppointment(address,activity,initHour)
 
-    def datetimeConvert(self,dayMonthYear_Hour: str) -> datetime.datetime:
+    def datetimeConvert(self,dayMonthYear_Hour: str) -> datetime:
         #Will convert human date time to datetime object:
         #TODO: Add locales support.
         c = pdt.Constants(localeID=self.connection.last_used_language, usePyICU=True)
@@ -119,7 +129,7 @@ class AppointmentService(Service):
         return initHour
 
 
-    def createAppointment(self, activity: str, initHour: datetime.datetime, address: str) -> str:
+    def createAppointment(self, activity: str, initHour: datetime, address: str) -> str:
         """
         Bla bla bla bla blaaaaa...
 
@@ -172,6 +182,15 @@ class AppointmentService(Service):
                 cursor.close()
 
             return reply
+
+    def giveInfo(self,address: str, date: str = None) -> str:
+        """
+        Will give info about all available activities for today and tomorrow.
+        """
+        onDay = datetimeConvert(date)
+        untilDay = onDay + timedelta(5) # Hardcoded offset
+        return ManageAppointments(address).reportAvailableAppointments(onDay,untilDay)
+
 
 
     def setupDB(self, databaseName: str, address: str) -> str:
