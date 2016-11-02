@@ -194,7 +194,7 @@ class AppointmentService(Service):
             onDay      = self.datetimeConvert(date)
         untilDay   = onDay + timedelta(6) # Hardcoded offset
 #	activities = MannageAppointments.getActivitiesNames()
-        return ManageAppointments(address).reportAvailableAppointments(onDay,untilDay)
+        return ManageAppointments(address).reportAvailableAppointments(onDay,untilDay,humanOutput=True)
 
 
 
