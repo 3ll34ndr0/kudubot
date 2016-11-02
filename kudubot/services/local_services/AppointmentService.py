@@ -69,7 +69,7 @@ class AppointmentService(Service):
         if len(message.message_body.lower().split(" ",1)) == 1:
             #Should give info about appointments for today and tomorrow...
             reply = str(self.giveInfo(address))
-        elif message.message_body.lower().split(" ",1)[0] == 'turno': # TODO:Avoid hardcoded Language
+        elif message.message_body.lower().split(" ",1)[0] == 'turnos': # TODO:Avoid hardcoded Language
             language, date = message.message_body.lower().split(" ",1)
             reply = self.giveInfo(address, date)
         elif message.message_body.lower().split(" ", 2)[1] == 'nuevo':# TODO:Avoid hardcoded Language
