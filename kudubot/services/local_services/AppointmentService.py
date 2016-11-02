@@ -187,7 +187,10 @@ class AppointmentService(Service):
         """
         Will give info about all available activities for today and tomorrow.
         """
-        onDay      = self.datetimeConvert(date)
+        if date is None:
+            onDay = datetime.now()
+        else:
+            onDay      = self.datetimeConvert(date)
         untilDay   = onDay + timedelta(6) # Hardcoded offset
 #	activities = MannageAppointments.getActivitiesNames()
         return ManageAppointments(address).reportAvailableAppointments(onDay,untilDay)
