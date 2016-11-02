@@ -68,6 +68,7 @@ class AppointmentService(Service):
 
         if len(message.message_body.lower().split(" ",1)) == 1:
             #Should give info about appointments for today and tomorrow...
+            language = message.message_body.lower()
             reply = str(self.giveInfo(address))
         elif message.message_body.lower().split(" ",1)[0] == 'turnos': # TODO:Avoid hardcoded Language
             language, date = message.message_body.lower().split(" ",1)
