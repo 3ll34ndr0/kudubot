@@ -91,11 +91,14 @@ class TerminalService(Service):
 
         :return: True if input is valid, False otherwise
         """
-        regex = "^horarios"
+        regex = "^horario.+"
         return re.search(re.compile(regex), message.message_body.lower())
 
     def getDestinos(self) -> str:
-        return 'Destinos disponibles: {}'.format(' '.join(list(destinos.keys())))
+        lista = list(destinos.keys())
+        lista.sort()
+        embellecida = map(lambda nombre: nombre[0].upper()+nombre[1:],lista)
+        return 'Destinos disponibles: \n{}'.format('\n'.join(embellecida))
 
     def getDestinoInfo(self, city: str) -> str:
         """
