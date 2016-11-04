@@ -47,7 +47,8 @@ class AppointmentService(Service):
     appointment = {"appointment": "en",
                    "turno"      : "es",
                    "turnos"     : "es",
-                   "reservar"   : "es"}
+                   "reservar"   : "es",
+                   "borrar"     : "es"}
     """
     Keywords for the appointment command
     """
@@ -77,6 +78,11 @@ class AppointmentService(Service):
             language, _, activity, dayMonthYear_Hour = message.message_body.lower().split(" ", 3)
             reply = self.createAppointment(activity,
                                            self.datetimeConvert(dayMonthYear_Hour), address)
+        elif message.message_body.lower().split(" ", 2)[1] == 'borrar':
+            language, activity, dayMonthYear_Hour = message.message_body.lower().split(" ", 3)
+            reply = self.deleteAppointment(activity,
+                                           self.datetimeConvert(dayMonthYear_Hour),
+                                           address)
         elif message.message_body.lower().split(" ", 2)[1] == 'almacen':
             language, _, databaseName = message.message_body.lower().split(" ", 2)
             if Authenticator(self.connection.identifier).is_from_admin(message):
@@ -146,6 +152,8 @@ class AppointmentService(Service):
         ManageAppointments(address, activity,initHour).createAppointment()
         # I yet don't konw why, but the EST timezone label apears..., so I'll strip it
         return "Actividad \"{}\" creada para el {} ...".format(activity,initHour.strftime("%c").rstrip('EST')) #TODO: translate
+
+    def deleteAppointment(activity, initHour, address):
 
 
     def isRegisteredUser(self,address: str) -> str:
