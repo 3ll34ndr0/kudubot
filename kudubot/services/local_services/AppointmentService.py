@@ -78,8 +78,9 @@ class AppointmentService(Service):
             language, _, activity, dayMonthYear_Hour = message.message_body.lower().split(" ", 3)
             reply = self.createAppointment(activity,
                                            self.datetimeConvert(dayMonthYear_Hour), address)
-        elif message.message_body.lower().split(" ", 2)[1] == 'borrar':
-            language, activity, dayMonthYear_Hour = message.message_body.lower().split(" ", 3)
+        elif message.message_body.lower().split(" ", 2)[0] == 'borrar':
+            print("DEBUG: {}".format(message.message_body.lower().split(" ", 2)))
+            language, activity, dayMonthYear_Hour = message.message_body.lower().split(" ", 2)
             reply = self.deleteAppointment(activity,
                                            self.datetimeConvert(dayMonthYear_Hour),
                                            address)
@@ -90,6 +91,7 @@ class AppointmentService(Service):
             else:
                 reply = "UR Not allowed 2 do this"
         else:
+            print("DEBUG: Entra al  ultimo else...")
             language, activity, dayMonthYear_Hour = message.message_body.lower().split(" ", 2)
             reply = self.makeAppointment(activity, self.datetimeConvert(dayMonthYear_Hour), address)
         # TODO: Accept double spaces if present...
@@ -153,7 +155,8 @@ class AppointmentService(Service):
         # I yet don't konw why, but the EST timezone label apears..., so I'll strip it
         return "Actividad \"{}\" creada para el {} ...".format(activity,initHour.strftime("%c").rstrip('EST')) #TODO: translate
 
-    def deleteAppointment(activity, initHour, address):
+    def deleteAppointment(self, activity, initHour, address):
+	    return ManageAppointments(address, activity=activity, initHour=initHour).deleteInitHour()
 
 
     def isRegisteredUser(self,address: str) -> str:
