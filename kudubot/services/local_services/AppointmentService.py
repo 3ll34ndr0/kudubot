@@ -73,7 +73,7 @@ class AppointmentService(Service):
             reply = str(self.giveInfo(address))
         elif message.message_body.lower().split(" ",1)[0] == 'turnos': # TODO:Avoid hardcoded Language
             language, date = message.message_body.lower().split(" ",1)
-            reply = str(self.giveInfo(address, date))
+            reply = str(self.giveInfo(address, date,"1"))
         elif message.message_body.lower().split(" ", 2)[1] == 'nuevo':# TODO:Avoid hardcoded Language
             language, _, activity, dayMonthYear_Hour = message.message_body.lower().split(" ", 3)
             reply = self.createAppointment(activity,
@@ -84,6 +84,7 @@ class AppointmentService(Service):
             reply = self.deleteAppointment(activity,
                                            self.datetimeConvert(dayMonthYear_Hour),
                                            address)
+            print("Debug: {}".format(reply))
         elif message.message_body.lower().split(" ", 2)[1] == 'almacen':
             language, _, databaseName = message.message_body.lower().split(" ", 2)
             if Authenticator(self.connection.identifier).is_from_admin(message):
@@ -99,6 +100,7 @@ class AppointmentService(Service):
         #be telephoneNumber with the @s.whatsapp.net ...
 
         self.connection.last_used_language = self.appointment[language]
+        print("DEBUG: {} is of type {}".format(reply, type(reply)))
 #        self.connection.last_used_timezone = tz
         reply_message = self.generate_reply_message(message, "Appointments...", reply)
         self.send_text_message(reply_message)
@@ -195,17 +197,24 @@ class AppointmentService(Service):
 
             return reply
 
-    def giveInfo(self,address: str, date: str = None) -> str:
+    def giveInfo(self,address: str, date: str = None, offset: str = "7") -> str:
         """
         Will give info about all available activities for today and tomorrow.
+	offset: How many days will to "date"
         """
         if date is None:
             onDay = datetime.now()
         else:
-            onDay      = self.datetimeConvert(date)
-        untilDay   = onDay + timedelta(6) # Hardcoded offset
-#	activities = MannageAppointments.getActivitiesNames()
-        return ManageAppointments(address).reportAvailableAppointments(onDay,untilDay,humanOutput=True)
+            onDay      = self.datetimeConvert(date).replace(hour=0,minute=0)
+        untilDay   = onDay + timedelta(int(offset)) # Hardcoded offset
+        activities = ManageAppointments(address).getActivitiesNames()
+        print("Bla bla bla {}".format(activities))
+        output = "_*:::Horarios disponibles:::*_\n"
+        for activity in activities:
+                reply = ManageAppointments(address,activity).reportAvailableAppointments(onDay,untilDay,humanOutput=True)
+		
+                output += reply
+        return output 
 
 
 
