@@ -129,7 +129,7 @@ class AppointmentService(Service):
         # If address is not in appointment database, it will copy it from the bot's database
         print(self.isRegisteredUser(address))
         # Do your job
-        return ManageAppointments(address, activity,initHour).makeAppointment(address,activity,initHour)
+        return ManageAppointments(address, activity,initHour).makeAppointment(address)
 
     def datetimeConvert(self,dayMonthYear_Hour: str) -> datetime:
         #Will convert human date time to datetime object:
