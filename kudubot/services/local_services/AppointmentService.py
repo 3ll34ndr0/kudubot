@@ -196,6 +196,8 @@ class AppointmentService(Service):
                 cursor.close()
 
             return reply
+        else:
+            return ManageAppointments(address).getUserRegister()
 
     def giveInfo(self,address: str, date: str = None, offset: str = "7") -> str:
         """
