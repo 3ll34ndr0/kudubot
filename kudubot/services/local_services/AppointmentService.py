@@ -127,7 +127,7 @@ class AppointmentService(Service):
         :return: the random key
         """
         # If address is not in appointment database, it will copy it from the bot's database
-        print("Is registered user?: {}"format(self.isRegisteredUser(address)))
+        print("Is registered user?: {}".format(self.isRegisteredUser(address)))
         # Do your job
         return ManageAppointments(address, activity,initHour).makeAppointment(address)
 
