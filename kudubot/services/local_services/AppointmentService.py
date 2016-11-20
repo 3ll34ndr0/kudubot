@@ -12,7 +12,8 @@ from kudubot.connection.generic.Message import Message
 from kudubot.servicehandlers.Authenticator import Authenticator
 import sys
 sys.path.append('/home/lean/arena/10cur4')
-import parsedatetime as pdt
+sys.path.append('/home/lean/arena/flappointment')
+iimport parsedatetime as pdt
 import pytz
 from datetime import datetime, timedelta
 tz = "America/Argentina/Cordoba" #TODO: Avoid hardcoded values
@@ -62,8 +63,9 @@ class AppointmentService(Service):
         """
         # Get the phonenumber if using what the fuck:
         if self.connection.identifier == 'whatsapp':
-            address, _ = message.get_individual_address().split("@",1) #For WA
+            address = message.get_individual_address()
         else:
+            address = message.get_individual_address()
             pass
             #TODO: Take into account Telegram ...
 
