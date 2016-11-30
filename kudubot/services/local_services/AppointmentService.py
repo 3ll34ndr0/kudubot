@@ -160,7 +160,8 @@ class AppointmentService(Service):
 	#
         #ManageAppointments(address, activity,initHour).createAppointment()
       if Activity.query.filter_by(name=activity).first() is None:
-        act = Activity(activity, manager=address)
+        manager = db.session.query(User).filter_by(wsaddress=address).one()
+        act = Activity(activity, manager=manager)
         db.session.add(act)
       else:
         act = db.session.query(Activity).filter_by(name=activity).one()
