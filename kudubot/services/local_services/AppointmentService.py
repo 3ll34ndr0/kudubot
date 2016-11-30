@@ -168,7 +168,7 @@ class AppointmentService(Service):
         appointment = Appointment(act, initHour)
         db.session.add(appointment)
         db.session.commit()
-        return appointment
+        return repr(appointment)
 
         # I yet don't konw why, but the EST timezone label apears..., so I'll strip it
 #        return "Actividad \"{}\" creada para el {} ...".format(activity,initHour.strftime("%c").rstrip('EST')) #TODO: translate
