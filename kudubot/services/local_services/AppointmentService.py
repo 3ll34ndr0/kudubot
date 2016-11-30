@@ -13,7 +13,9 @@ from kudubot.servicehandlers.Authenticator import Authenticator
 import sys
 sys.path.append('/home/lean/arena/10cur4')
 sys.path.append('/home/lean/arena/flappointment')
-iimport parsedatetime as pdt
+from app import db
+from app.tables import *
+import parsedatetime as pdt
 import pytz
 from datetime import datetime, timedelta
 tz = "America/Argentina/Cordoba" #TODO: Avoid hardcoded values
@@ -144,23 +146,34 @@ class AppointmentService(Service):
 
     def createAppointment(self, activity: str, initHour: datetime, address: str) -> str:
         """
+        The bot should ask for a manager after or during
+        the activity creation.
         Bla bla bla bla blaaaaa...
 
         :param activity: the name of the activity to create
-        :param dayMontYear_Hour: the date tima in any way that parsedatetime
-        can understand.
-        :param address: the telephone number of the person who sent the message
-        :return: the random key
+        :param dayMontYear_Hour: the datetime in datetime.datetime object.
+        :param address: the whatsapp|telegram|email of the person who sent the message
+        :return: An confirmation message
         """
 	#TODO:Check if the current address has been registered...
 
 	#
-        ManageAppointments(address, activity,initHour).createAppointment()
+        #ManageAppointments(address, activity,initHour).createAppointment()
+      if Activity.query.filter_by(name=activity).first() is None:
+        act = Activity(activity, manager=address)
+        db.session.add(act)
+      else:
+        act = db.session.query(Activity).filter_by(name=activity).one()
+      appointment = Appointment(act, initHour)
+      db.session.add(appointment)
+      db.session.commit()
+      return appointment
+
         # I yet don't konw why, but the EST timezone label apears..., so I'll strip it
         return "Actividad \"{}\" creada para el {} ...".format(activity,initHour.strftime("%c").rstrip('EST')) #TODO: translate
 
     def deleteAppointment(self, activity, initHour, address):
-	    return ManageAppointments(address, activity=activity, initHour=initHour).deleteInitHour()
+        return ManageAppointments(address, activity=activity, initHour=initHour).deleteInitHour()
 
 
     def isRegisteredUser(self,address: str) -> str:
@@ -172,20 +185,15 @@ class AppointmentService(Service):
         """
         The addressbook database file path
         """
-
-        if ManageAppointments(address).getUserRegister() is None:
+        # user = db.session.query(User).filter_by(wsaddress=address).one()
+        # The above code gives an  object with all data from that User
+#        user = db.session.query(User).filter_by(wsaddress=address).one()
+        if User.query.filter_by(wsaddress=address).first() is None:
             try:
-                db = sqlite3.connect(addressbook)
-                cursor = db.cursor()
-                t = (address+'@s.whatsapp.net',)
-                cursor.execute(
-                '''SELECT * FROM Contacts WHERE address=?''', t)
-                phone, name = cursor.fetchone()
-                if phone is None:
-                    reply = "Error: Number not found..."
-                else:
-                    reply = ManageAppointments(address).createUserRegisterDB(address,name)
-
+                user = User(name,address)
+                db.session.add(user)
+                db.session.commit()
+                reply = "Avereree"
             except sqlite3.IntegrityError as e:
                 db.rollback()
                 raise e
@@ -194,12 +202,10 @@ class AppointmentService(Service):
                 db.rollback()
                 raise e
 
-            finally:
-                cursor.close()
 
             return reply
         else:
-            return ManageAppointments(address).getUserRegister()
+            return db.session.query(User).filter_by(wsaddress=address).one()
 
     def giveInfo(self,address: str, date: str = None, offset: str = "7") -> str:
         """
