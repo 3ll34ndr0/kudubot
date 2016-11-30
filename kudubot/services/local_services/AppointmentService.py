@@ -155,23 +155,23 @@ class AppointmentService(Service):
         :param address: the whatsapp|telegram|email of the person who sent the message
         :return: An confirmation message
         """
-	#TODO:Check if the current address has been registered...
+        #TODO:Check if the current address has been registered...
 
-	#
+
         #ManageAppointments(address, activity,initHour).createAppointment()
-      if Activity.query.filter_by(name=activity).first() is None:
-        manager = db.session.query(User).filter_by(wsaddress=address).one()
-        act = Activity(activity, manager=manager)
-        db.session.add(act)
-      else:
-        act = db.session.query(Activity).filter_by(name=activity).one()
-      appointment = Appointment(act, initHour)
-      db.session.add(appointment)
-      db.session.commit()
-      return appointment
+        if Activity.query.filter_by(name=activity).first() is None:
+           manager = db.session.query(User).filter_by(wsaddress=address).one()
+           act = Activity(activity, manager=manager)
+           db.session.add(act)
+        else:
+           act = db.session.query(Activity).filter_by(name=activity).one()
+        appointment = Appointment(act, initHour)
+        db.session.add(appointment)
+        db.session.commit()
+        return appointment
 
         # I yet don't konw why, but the EST timezone label apears..., so I'll strip it
-        return "Actividad \"{}\" creada para el {} ...".format(activity,initHour.strftime("%c").rstrip('EST')) #TODO: translate
+#        return "Actividad \"{}\" creada para el {} ...".format(activity,initHour.strftime("%c").rstrip('EST')) #TODO: translate
 
     def deleteAppointment(self, activity, initHour, address):
         return ManageAppointments(address, activity=activity, initHour=initHour).deleteInitHour()
