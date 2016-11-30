@@ -182,36 +182,50 @@ class AppointmentService(Service):
         Will check if the sender is not registered as a user.
         """
 
-        addressbook = os.path.join(LocalConfigChecker.contacts_directory, "whatsapp", "addressbook.db")
+        addressbook = os.path.join(LocalConfigChecker.contacts_directory, self.connection.identifier, "addressbook.db")
         """
-        The addressbook database file path
+        The addressbook database file path for whatsapp|telegram|mail
         """
         # user = db.session.query(User).filter_by(wsaddress=address).one()
         # The above code gives an  object with all data from that User
 #        user = db.session.query(User).filter_by(wsaddress=address).one()
-        if User.query.filter_by(wsaddress=address).first() is None:
+        if User.query.filter_by(wsaddress=address).first() is None: #TODO: avoid only for whatsapp
             try:
+                dbk = sqlite3.connect(addressbook)
+                cursor = dbk.cursor()
+                t = (address,)
+                cursor.execute(
+                '''SELECT * FROM Contacts WHERE address=?''', t)
+                _, name = cursor.fetchone()
+                """
+                Get the name from kudubot database
+                """
                 user = User(name,address)
                 db.session.add(user)
                 db.session.commit()
-                reply = "Avereree"
+                """
+                Create an User object and save it in flappointment database
+                """
             except sqlite3.IntegrityError as e:
-                db.rollback()
+                dbk.rollback()
                 raise e
 
             except sqlite3.OperationalError as e:
-                db.rollback()
+                dbk.rollback()
+                raise e
+            except as e:
+                db.session.rollback()
                 raise e
 
 
-            return reply
+            return repr(user)
         else:
             return db.session.query(User).filter_by(wsaddress=address).one()
 
     def giveInfo(self,address: str, date: str = None, offset: str = "7") -> str:
         """
         Will give info about all available activities for today and tomorrow.
-	offset: How many days will to "date"
+        offset: How many days will to "date"
         """
         if date is None:
             onDay = datetime.now()
