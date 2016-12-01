@@ -213,9 +213,9 @@ class AppointmentService(Service):
             except sqlite3.OperationalError as e:
                 dbk.rollback()
                 raise e
-            except as e:
+            except:
                 db.session.rollback()
-                raise e
+                raise
 
 
             return repr(user)
