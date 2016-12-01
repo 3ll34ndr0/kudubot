@@ -231,15 +231,18 @@ class AppointmentService(Service):
         else:
             onDay      = self.datetimeConvert(date).replace(hour=0,minute=0)
         untilDay   = onDay + timedelta(int(offset)) # Hardcoded offset
-        activities = ManageAppointments(address).getActivitiesNames()
-        print("Bla bla bla {}".format(activities))
+#        activities = ManageAppointments(address).getActivitiesNames()
+#        print("Bla bla bla {}".format(activities))
         output = "_*:::Horarios disponibles:::*_\n"
-        for activity in activities:
-                reply = ManageAppointments(address,activity).reportAvailableAppointments(onDay,untilDay,humanOutput=True)
-		
-                output += reply
-        return output 
-
+#        for activity in activities:
+#                reply = ManageAppointments(address,activity).reportAvailableAppointments(onDay,untilDay,humanOutput=True)
+#                output += reply
+#        return output
+        q = db.session.query(Activity)
+        acts = q.filter(db.and_(Appointment.initHour > onDay, Appointment.initHour < untilDay))
+        for row in acts:
+            output += "*{}*: {}".format(row.activity,row.initHour)
+        return output
 
 
     def setupDB(self, databaseName: str, address: str) -> str:
