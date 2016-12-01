@@ -238,10 +238,10 @@ class AppointmentService(Service):
 #                reply = ManageAppointments(address,activity).reportAvailableAppointments(onDay,untilDay,humanOutput=True)
 #                output += reply
 #        return output
-        q = db.session.query(Activity)
+        q = db.session.query(Appointment)
         acts = q.filter(db.and_(Appointment.initHour > onDay, Appointment.initHour < untilDay))
         for row in acts:
-            output += "*{}*: {}".format(row.activity,row.initHour)
+            output += "*{}*: {}\n".format(row.activity,row.initHour)
         return output
 
 
