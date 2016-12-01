@@ -156,8 +156,7 @@ class AppointmentService(Service):
         :return: An confirmation message
         """
         #TODO:Check if the current address has been registered...
-
-
+        print(self.isRegisteredUser(address))
         #ManageAppointments(address, activity,initHour).createAppointment()
         if Activity.query.filter_by(name=activity).first() is None:
            manager = db.session.query(User).filter_by(wsaddress=address).one()
@@ -220,7 +219,7 @@ class AppointmentService(Service):
 
             return repr(user)
         else:
-            return db.session.query(User).filter_by(wsaddress=address).one()
+            return repr(db.session.query(User).filter_by(wsaddress=address).one())
 
     def giveInfo(self,address: str, date: str = None, offset: str = "7") -> str:
         """
