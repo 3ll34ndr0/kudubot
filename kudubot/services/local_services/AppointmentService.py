@@ -178,10 +178,23 @@ class AppointmentService(Service):
         act = db.session.query(Activity).filter_by(name=activity).one()
         print(initHour)
         print(act)
-        apptmnt = db.session.query(Appointment).filter_by(initHour=initHour).filter_by(activity=act).all()
+        apptmnt = db.session.query(Appointment).filter_by(initHour=initHour).filter_by(activity=act).one()
         print(apptmnt)
-        message = "Realmente quiere borrar *{}*)? (Si/No)".format(apptmnt)
-        return message
+        message = "Voy a borrar *{}*".format(apptmnt)
+        db.session.delete.(apptmnt)
+        try:
+            erro = db.session.commit()
+        except:
+            db.session.rollback()
+
+        if erro is None:
+            result = message
+        else:
+            result = erro
+        """
+        Some output message
+        """
+        return result
 
     def isRegisteredUser(self,address: str) -> str:
         """
