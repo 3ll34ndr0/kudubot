@@ -173,8 +173,11 @@ class AppointmentService(Service):
 #        return "Actividad \"{}\" creada para el {} ...".format(activity,initHour.strftime("%c").rstrip('EST')) #TODO: translate
 
     def deleteAppointment(self, activity, initHour, address):
-        return ManageAppointments(address, activity=activity, initHour=initHour).deleteInitHour()
-
+        #return ManageAppointments(address, activity=activity, initHour=initHour).deleteInitHour()
+        act = db.session.query(Activity).filter_by(name=activity).one()
+        apptmnt = db.session.query(Appointment).filter_by(initHour=initHour).filter_by(activity=act)
+        message = "Realmente quiere borrar *{}*)? (Si/No)".format(apptmnt)
+        return message
 
     def isRegisteredUser(self,address: str) -> str:
         """
