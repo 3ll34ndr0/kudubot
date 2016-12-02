@@ -175,7 +175,10 @@ class AppointmentService(Service):
     def deleteAppointment(self, activity, initHour, address):
         #return ManageAppointments(address, activity=activity, initHour=initHour).deleteInitHour()
         act = db.session.query(Activity).filter_by(name=activity).one()
-        apptmnt = db.session.query(Appointment).filter_by(initHour=initHour).filter_by(activity=act).one()
+        print(initHour)
+        print(act)
+        apptmnt = db.session.query(Appointment).filter_by(initHour=initHour).filter_by(activity=act).all()
+        print(apptmnt)
         message = "Realmente quiere borrar *{}*)? (Si/No)".format(apptmnt)
         return message
 
