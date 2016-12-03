@@ -165,9 +165,10 @@ class AppointmentService(Service):
            db.session.add(act)
         else:
            act = db.session.query(Activity).filter_by(name=activity).one()
-        appointment = Appointment(act, initHour)
-        db.session.add(appointment)
-        db.session.commit()
+           if Appointment.query.filter_by(activity=act).filter_by(initHour=initHour).first() is None
+                appointment = Appointment(act, initHour)
+                db.session.add(appointment)
+                db.session.commit()
         return repr(appointment)
 
         # I yet don't konw why, but the EST timezone label apears..., so I'll strip it
@@ -181,7 +182,7 @@ class AppointmentService(Service):
         apptmnt = db.session.query(Appointment).filter_by(initHour=initHour).filter_by(activity=act).one()
         print(apptmnt)
         message = "Voy a borrar *{}*".format(apptmnt)
-        db.session.delete.(apptmnt)
+        db.session.delete(apptmnt)
         try:
             erro = db.session.commit()
         except:
