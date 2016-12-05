@@ -140,8 +140,8 @@ class AppointmentService(Service):
         #TODO: Add locales support.
         c = pdt.Constants(localeID=self.connection.last_used_language, usePyICU=True)
         p = pdt.Calendar(c)
-        initHour,_ = p.parseDT(dayMonthYear_Hour, tzinfo=pytz.timezone(tz))
-        print (dayMonthYear_Hour,initHour, tz, pytz.timezone(tz))
+        initHour, tipoFecha = p.parseDT(dayMonthYear_Hour, tzinfo=pytz.timezone(tz))
+        print (dayMonthYear_Hour,initHour, tz, pytz.timezone(tz), tipoFecha)
         return initHour
 
 
