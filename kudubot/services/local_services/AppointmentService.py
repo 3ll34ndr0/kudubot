@@ -169,11 +169,13 @@ class AppointmentService(Service):
            print("Enta al else")
            act = db.session.query(Activity).filter_by(name=activity).one()
            print(act)
-           print(Appointment.query.filter_by(activity=act).filter_by(initHour=initHour).all())
-           if Appointment.query.filter_by(activity=act).filter_by(initHour=initHour).first() is None:
+        appointment = Appointment.query.filter_by(activity=act).filter_by(initHour=initHour)
+        if appointment.first() is None:
                 appointment = Appointment(act, initHour)
                 db.session.add(appointment)
                 db.session.commit()
+        else:
+               appointment = "Ya existe en nuestros registros!: {}".format(appointment.all())
         return repr(appointment)
 
         # I yet don't konw why, but the EST timezone label apears..., so I'll strip it
