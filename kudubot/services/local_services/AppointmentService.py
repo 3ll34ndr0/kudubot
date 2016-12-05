@@ -163,6 +163,8 @@ class AppointmentService(Service):
            manager = db.session.query(User).filter_by(wsaddress=address).one()
            act = Activity(activity, manager=manager)
            db.session.add(act)
+           db.session.commit()
+           print(act)
         else:
            act = db.session.query(Activity).filter_by(name=activity).one()
            if Appointment.query.filter_by(activity=act).filter_by(initHour=initHour).first() is None:
