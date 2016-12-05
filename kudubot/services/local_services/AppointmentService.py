@@ -169,6 +169,7 @@ class AppointmentService(Service):
            print("Enta al else")
            act = db.session.query(Activity).filter_by(name=activity).one()
            print(act)
+           print(Appointment.query.filter_by(activity=act).filter_by(initHour=initHour).all())
            if Appointment.query.filter_by(activity=act).filter_by(initHour=initHour).first() is None:
                 appointment = Appointment(act, initHour)
                 db.session.add(appointment)
