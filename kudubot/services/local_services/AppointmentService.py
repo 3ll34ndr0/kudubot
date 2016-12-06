@@ -128,12 +128,28 @@ class AppointmentService(Service):
         :param dayMontYear_Hour: the date tima in any way that parsedatetime
         can understand.
         :param address: the telephone number of the person who sent the message
-        :return: the random key
+        :return: information/status message
         """
         # If address is not in appointment database, it will copy it from the bot's database
         print("Is registered user?: {}".format(self.isRegisteredUser(address)))
         # Do your job
-        return ManageAppointments(address, activity,initHour).makeAppointment(address)
+#        return ManageAppointments(address, activity,initHour).makeAppointment(address)
+        act = db.session.query(Activity).filter_by(name=activity).one()
+        print("El ... ... {} y {} ".format(initHour,act))
+        apptmnt = db.session.query(Appointment).filter_by(initHour=initHour).filter_by(activity=act)
+        print("La ... .. {} ".format(apptmnt.first()))
+        participant = db.session.query(User).filter_by(wsaddress=address).one()
+        subs = apptmnt.filter(
+                        Appointment.initHour==initHour).filter(
+                        User.name==participant.name).first()
+        if subs is None:
+            apptmnt.first().enrolled.append(MakeAppointment(participant))
+            db.session.add(apptmnt)
+            db.session.commit()
+            message = "Turno reservado para {}".format(apptmnt)
+        else:
+            message = "Ud. ya tiene reservado un turno para {}".format(apptmnt)
+        return message
 
     def datetimeConvert(self,dayMonthYear_Hour: str) -> datetime:
         #Will convert human date time to datetime object:
