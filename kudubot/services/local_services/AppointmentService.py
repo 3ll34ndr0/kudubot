@@ -137,11 +137,12 @@ class AppointmentService(Service):
         act = db.session.query(Activity).filter_by(name=activity).one()
         print("El ... ... {} y {} ".format(initHour,act))
         apptmnt = db.session.query(Appointment).filter_by(initHour=initHour).filter_by(activity=act)
-        print("La ... .. {} ".format(apptmnt.first()))
         participant = db.session.query(User).filter_by(wsaddress=address).one()
+        print("Vamos a ver si {} tiene un turno en {} ".format(participant.name, apptmnt.first()))
         subs = apptmnt.filter(
                         Appointment.initHour==initHour).filter(
                         User.name==participant.name).first()
+        print(subs)
         if subs is None:
             apptmnt.first().enrolled.append(MakeAppointment(participant))
             db.session.add(apptmnt)
