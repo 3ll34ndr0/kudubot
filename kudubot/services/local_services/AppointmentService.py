@@ -136,6 +136,8 @@ class AppointmentService(Service):
 #        return ManageAppointments(address, activity,initHour).makeAppointment(address)
         act = db.session.query(Activity).filter_by(name=activity).one()
         print("El ... ... {} y {} ".format(initHour,act))
+        allApps = db.session.query(Appointment).filter(Appointment.activity==activity).filter(Appointment.initHour>datetime.now())
+        print(allApps)
         apptmnt = db.session.query(Appointment).filter_by(initHour=initHour).filter_by(activity=act).first()
         participant = db.session.query(User).filter_by(wsaddress=address).one()
         print("Vamos a ver si {} tiene un turno en {} ".format(participant.name, apptmnt))
@@ -145,7 +147,8 @@ class AppointmentService(Service):
         pulgarBajo = "👎🏽"
         pulgarAlto = "👍🏼"
         if apptmnt is None:
-            message = "No hay ningún turno para *{}* en el horario _{}_".format(activity,initHour)
+            message = "No hay ningún turno disponible para *{}* en el horario _{}_\n".format(activity,initHour)
+            message += "Hay disponibilidad en:\n{}".format(allApps.all())
         elif subs is None:
             apptmnt.enrolled.append(MakeAppointment(participant))
             db.session.add(apptmnt)
