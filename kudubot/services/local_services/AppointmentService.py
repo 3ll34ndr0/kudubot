@@ -142,8 +142,8 @@ class AppointmentService(Service):
         subs = db.session.query(Appointment).join('enrolled','user').filter(User.name==participant.name).filter(Appointment.initHour==initHour).first()
 #        subs = apptmnt.filter(Appointment.initHour==initHour).filter(User.name==participant.name)
         print(subs)
-pulgarBajo = "👎🏽"
-pulgarAlto = "👍🏼"
+        pulgarBajo = "👎🏽"
+        pulgarAlto = "👍🏼"
         if apptmnt is None:
             message = "No hay ningún turno para *{}* en el horario _{}_".format(activity,initHour)
         elif subs is None:
