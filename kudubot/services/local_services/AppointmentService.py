@@ -146,7 +146,7 @@ class AppointmentService(Service):
             apptmnt.enrolled.append(MakeAppointment(participant))
             db.session.add(apptmnt)
             db.session.commit()
-            message = "Turno reservado para {}".format(repr(apptmnt))
+            message = "👍 "
         else:
             message = "Ud. ya tiene reservado un turno para {}".format(repr(apptmnt))
         return message
