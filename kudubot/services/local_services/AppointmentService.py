@@ -147,9 +147,9 @@ class AppointmentService(Service):
             apptmnt.first().enrolled.append(MakeAppointment(participant))
             db.session.add(apptmnt)
             db.session.commit()
-            message = "Turno reservado para {}".format(apptmnt)
+            message = "Turno reservado para {}".format(repr(apptmnt))
         else:
-            message = "Ud. ya tiene reservado un turno para {}".format(apptmnt)
+            message = "Ud. ya tiene reservado un turno para {}".format(repr(apptmnt))
         return message
 
     def datetimeConvert(self,dayMonthYear_Hour: str) -> datetime:
