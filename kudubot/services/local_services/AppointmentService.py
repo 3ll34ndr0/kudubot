@@ -304,7 +304,7 @@ class AppointmentService(Service):
         return ManageAppointments(address).setup(databaseName)  #exeption
                                                                 #handled inside method
 
-def hasCredits(address: str, activity: str) -> str:
+def hasCredit(address: str, activity: str) -> str:
     return db.session.query(Credit).join('user').join('activity',).filter(User.wsaddress==address).filter(Activity.name==activity).first()
 
 def drawCredit(address: str, activity: str, credits: int) -> int:
