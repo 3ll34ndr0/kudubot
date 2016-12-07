@@ -174,8 +174,7 @@ class AppointmentService(Service):
         apptmnt = db.session.query(Appointment).filter_by(initHour=initHour).filter_by(activity=act).first()
         participant = db.session.query(User).filter_by(wsaddress=address).one()
         print("Vamos a ver si {} tiene un turno en {} ".format(participant.name, apptmnt))
-        subs =
-        db.session.query(Appointment).join('enrolled','user').filter(User.name==participant.name).filter(Appointment.initHour==initHour).first()
+        subs = db.session.query(Appointment).join('enrolled','user').filter(User.name==participant.name).filter(Appointment.initHour==initHour).first()
         #TODO: Chequear, meparece que le falta la condición de actividadtambién
 return "ok"
 
