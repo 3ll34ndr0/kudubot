@@ -51,7 +51,8 @@ class AppointmentService(Service):
                    "turno"      : "es",
                    "turnos"     : "es",
                    "reservar"   : "es",
-                   "borrar"     : "es"}
+                   "borrar"     : "es",
+                   "cancelar"   : "es"}
     """
     Keywords for the appointment command
     """
@@ -95,6 +96,10 @@ class AppointmentService(Service):
                 reply = self.setupDB(databaseName, address)
             else:
                 reply = "UR Not allowed 2 do this"
+        elif message.message_body.lower().split(" ", 2)[0] == 'cancelar':
+            language, activity, dayMonthYear_Hour = message.message_body.lower().split(" ", 2)
+            reply = self.cancelAppointment(activity, self.datetimeConvert(dayMonthYear_Hour), address)
+
         else:
             print("DEBUG: Entra al  ultimo else...")
             language, activity, dayMonthYear_Hour = message.message_body.lower().split(" ", 2)
@@ -139,6 +144,8 @@ class AppointmentService(Service):
         apptmnt = db.session.query(Appointment).filter_by(initHour=initHour).filter_by(activity=act).first()
         participant = db.session.query(User).filter_by(wsaddress=address).one()
         print("Vamos a ver si {} tiene un turno en {} ".format(participant.name, apptmnt))
+        #TODO: Chequear subs, meparece que le falta la condición de actividadtambién
+
         subs = db.session.query(Appointment).join('enrolled','user').filter(User.name==participant.name).filter(Appointment.initHour==initHour).first()
 #        subs = apptmnt.filter(Appointment.initHour==initHour).filter(User.name==participant.name)
         pulgarBajo = "👎🏽"
@@ -162,6 +169,15 @@ class AppointmentService(Service):
         else:
             message = "Ud. ya tiene reservado un turno para *{}*: {}".format(apptmnt.activity, apptmnt.initHour)
         return message
+    def cancelAppointment(self, activity: str, initHour: datetime, address: str) -> str:
+        print("Is registered user?: {}".format(self.isRegisteredUser(address)))
+        apptmnt = db.session.query(Appointment).filter_by(initHour=initHour).filter_by(activity=act).first()
+        participant = db.session.query(User).filter_by(wsaddress=address).one()
+        print("Vamos a ver si {} tiene un turno en {} ".format(participant.name, apptmnt))
+        subs =
+        db.session.query(Appointment).join('enrolled','user').filter(User.name==participant.name).filter(Appointment.initHour==initHour).first()
+        #TODO: Chequear, meparece que le falta la condición de actividadtambién
+return "ok"
 
     def datetimeConvert(self,dayMonthYear_Hour: str) -> datetime:
         #Will convert human date time to datetime object:
