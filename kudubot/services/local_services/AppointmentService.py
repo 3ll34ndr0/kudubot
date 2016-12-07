@@ -171,6 +171,7 @@ class AppointmentService(Service):
         return message
     def cancelAppointment(self, activity: str, initHour: datetime, address: str) -> str:
         print("Is registered user?: {}".format(self.isRegisteredUser(address)))
+        act = db.session.query(Activity).filter_by(name=activity).first()
         apptmnt = db.session.query(Appointment).filter_by(initHour=initHour).filter_by(activity=act).first()
         participant = db.session.query(User).filter_by(wsaddress=address).one()
         print("Vamos a ver si {} tiene un turno en {} ".format(participant.name, apptmnt))
