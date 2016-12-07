@@ -135,27 +135,30 @@ class AppointmentService(Service):
         # Do your job
 #        return ManageAppointments(address, activity,initHour).makeAppointment(address)
         act = db.session.query(Activity).filter_by(name=activity).one()
-        print("El ... ... {} y {} ".format(initHour,act))
         allApps = db.session.query(Appointment).filter(Appointment.activity==act).filter(Appointment.initHour>datetime.now())
-        print(allApps)
         apptmnt = db.session.query(Appointment).filter_by(initHour=initHour).filter_by(activity=act).first()
         participant = db.session.query(User).filter_by(wsaddress=address).one()
         print("Vamos a ver si {} tiene un turno en {} ".format(participant.name, apptmnt))
         subs = db.session.query(Appointment).join('enrolled','user').filter(User.name==participant.name).filter(Appointment.initHour==initHour).first()
 #        subs = apptmnt.filter(Appointment.initHour==initHour).filter(User.name==participant.name)
-        print(subs)
         pulgarBajo = "👎🏽"
         pulgarAlto = "👍🏼"
         if apptmnt is None:
-            message = "No hay ningún turno disponible para *{}* en el horario _{}_\n".format(activity,initHour)
+            message = "Ningún turno disponible para *{}* el _{}_\n".format(activity,initHour)
             message += "Hay disponibilidad en:\n"
             for ap in allApps:
                 message +="{}\n".format(ap)
         elif subs is None:
-            apptmnt.enrolled.append(MakeAppointment(participant))
-            db.session.add(apptmnt)
-            db.session.commit()
-            message = pulgarAlto
+            if hasCredit(address, activity) is not None:
+                saldo = drawCredit(address,activity,1)
+                apptmnt.enrolled.append(MakeAppointment(participant))
+                db.session.add(apptmnt)
+                db.session.commit()
+                message = pulgarAlto
+                if saldo >= 0:
+                    message += "\nCréditos disponibles para {}: {}".format(pulgarAlto,activity,saldo)
+            else:
+                message = "Ud. no puede reservar turnos sin inscribirse previamente."
         else:
             message = "Ud. ya tiene reservado un turno para *{}*: {}".format(apptmnt.activity, apptmnt.initHour)
         return message
@@ -300,4 +303,17 @@ class AppointmentService(Service):
     def setupDB(self, databaseName: str, address: str) -> str:
         return ManageAppointments(address).setup(databaseName)  #exeption
                                                                 #handled inside method
+
+def hasCredits(address: str, activity: str) -> str:
+    return db.session.query(Credit).join('user').join('activity',).filter(User.wsaddress==address).filter(Activity.name==activity).first()
+
+def drawCredit(address: str, activity: str, credits: int) -> int:
+    """
+    Resta credits y retorna el saldo
+    """
+    creds = db.session.query(Credit).join('activity',).join('user').filter(Activity.name=='dormir').first()
+    creds.credits -= credits
+    db.session.add(creds)
+    db.session.commit()
+    return creds.credits
 
