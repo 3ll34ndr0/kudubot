@@ -176,7 +176,7 @@ class AppointmentService(Service):
         print("Vamos a ver si {} tiene un turno en {} ".format(participant.name, apptmnt))
         subs = db.session.query(Appointment).join('enrolled','user').filter(User.name==participant.name).filter(Appointment.initHour==initHour).first()
         #TODO: Chequear, meparece que le falta la condición de actividadtambién
-return "ok"
+        return "ok"
 
     def datetimeConvert(self,dayMonthYear_Hour: str) -> datetime:
         #Will convert human date time to datetime object:
