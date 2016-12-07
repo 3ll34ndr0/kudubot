@@ -148,7 +148,9 @@ class AppointmentService(Service):
         pulgarAlto = "👍🏼"
         if apptmnt is None:
             message = "No hay ningún turno disponible para *{}* en el horario _{}_\n".format(activity,initHour)
-            message += "Hay disponibilidad en:\n{}".format(allApps.all())
+            message += "Hay disponibilidad en:\n"
+            for ap in allApps:
+                message +="{}\n".format(ap)
         elif subs is None:
             apptmnt.enrolled.append(MakeAppointment(participant))
             db.session.add(apptmnt)
