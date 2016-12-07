@@ -171,11 +171,14 @@ class AppointmentService(Service):
         return message
     def cancelAppointment(self, activity: str, initHour: datetime, address: str) -> str:
         print("Is registered user?: {}".format(self.isRegisteredUser(address)))
-        act = db.session.query(Activity).filter_by(name=activity).first()
+        act = db.session.query(Activity).filter_by(name=activity).one()
+        apptmnt = db.session.query(Appointment).filter_by(initHour=initHour).filter_by(activity=act).first()
+        print(act)
         apptmnt = db.session.query(Appointment).filter_by(initHour=initHour).filter_by(activity=act).first()
         participant = db.session.query(User).filter_by(wsaddress=address).one()
         print("Vamos a ver si {} tiene un turno en {} ".format(participant.name, apptmnt))
         subs = db.session.query(Appointment).join('enrolled','user').filter(User.name==participant.name).filter(Appointment.initHour==initHour).first()
+        print(repr(subs))
         #TODO: Chequear, meparece que le falta la condición de actividadtambién
         return repr(subs) 
 
