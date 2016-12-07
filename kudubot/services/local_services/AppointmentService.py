@@ -88,7 +88,7 @@ class AppointmentService(Service):
             reply = self.deleteAppointment(activity,
                                            self.datetimeConvert(dayMonthYear_Hour),
                                            address)
-            print("Debug: {}".format(reply))
+            print("DEBUG: {}".format(reply))
         elif message.message_body.lower().split(" ", 2)[1] == 'almacen':
             language, _, databaseName = message.message_body.lower().split(" ", 2)
             if Authenticator(self.connection.identifier).is_from_admin(message):
@@ -156,7 +156,7 @@ class AppointmentService(Service):
                 db.session.commit()
                 message = pulgarAlto
                 if saldo >= 0:
-                    message += "\nCréditos disponibles para {}: {}".format(pulgarAlto,activity,saldo)
+                    message += "\nCréditos disponibles para {}: {}".format(activity,saldo)
             else:
                 message = "Ud. no puede reservar turnos sin inscribirse previamente."
         else:
