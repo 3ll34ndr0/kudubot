@@ -146,7 +146,8 @@ class AppointmentService(Service):
         print("Vamos a ver si {} tiene un turno en {} ".format(participant.name, apptmnt))
         #TODO: Chequear subs, meparece que le falta la condición de actividadtambién
 
-        subs = db.session.query(Appointment).join('enrolled','user').filter(User.name==participant.name).filter(Appointment.initHour==initHour).first()
+        subs =
+        db.session.query(Appointment).join('enrolled','user').filter(User.name==participant.name).filter(Appointment.activity==activity).filter(Appointment.initHour==initHour).first()
 #        subs = apptmnt.filter(Appointment.initHour==initHour).filter(User.name==participant.name)
         pulgarBajo = "👎🏽"
         pulgarAlto = "👍🏼"
