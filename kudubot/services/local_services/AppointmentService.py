@@ -156,14 +156,15 @@ class AppointmentService(Service):
             for ap in allApps:
                 message +="{}\n".format(ap)
         elif subs is None:
-            if hasCredit(address, activity) is not None:
+            activityCredits = hasCredit(address, activity)
+            if activityCredits is not None:
                 saldo = drawCredit(address,activity,1)
                 apptmnt.enrolled.append(MakeAppointment(participant))
                 db.session.add(apptmnt)
                 db.session.commit()
                 message = pulgarAlto
                 if saldo >= 0:
-                    message += "\nCréditos disponibles para {}: {}".format(activity,saldo)
+                    message += "\nCréditos disponibles para {}: {} hasta el {}".format(activity,saldo)
             else:
                 message = "Ud. no puede reservar turnos sin inscribirse previamente."
         else:
@@ -321,16 +322,17 @@ class AppointmentService(Service):
         return ManageAppointments(address).setup(databaseName)  #exeption
                                                                 #handled inside method
 
-def hasCredit(address: str, activity: str) -> str:
-    return db.session.query(Credit).join('user').join('activity',).filter(User.wsaddress==address).filter(Activity.name==activity).first()
+def hasCredit(address: str, activity: str) -> int,datetime:
+    creds = db.session.query(Credit).join('activity',).join('user').filter(Activity.name==activity).filter(User.wsaddress==address).first()
+    return creds.credits, creds.expireDate
 
-def drawCredit(address: str, activity: str, credits: int) -> int:
+def drawCredit(address: str, activity: str, credits: int) -> int,datetime:
     """
-    Resta credits y retorna el saldo
+    Resta credits y retorna el saldo y fecha de vencimiento
     """
-    creds = db.session.query(Credit).join('activity',).join('user').filter(Activity.name=='dormir').first()
+    creds =db.session.query(Credit).join('activity',).join('user').filter(Activity.name==activity).filter(User.wsaddress==address).first()
     creds.credits -= credits
     db.session.add(creds)
     db.session.commit()
-    return creds.credits
+    return creds.credits,creds.expireDate
 
