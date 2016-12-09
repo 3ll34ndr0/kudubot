@@ -144,10 +144,10 @@ class AppointmentService(Service):
         apptmnt = db.session.query(Appointment).filter_by(initHour=initHour).filter_by(activity=act).first()
         participant = db.session.query(User).filter_by(wsaddress=address).one()
         print("Vamos a ver si {} tiene un turno en {} ".format(participant.name, apptmnt))
-        #TODO: Chequear subs, meparece que le falta la condición de actividadtambién
-
-        subs = db.session.query(Appointment).join('enrolled','user').filter(User.name==participant.name).filter(Appointment.activity==act).filter(Appointment.initHour==initHour).first()
-#        subs = apptmnt.filter(Appointment.initHour==initHour).filter(User.name==participant.name)
+        subs = db.session.query(Appointment).join('enrolled','user').filter(User.wsaddress==participant.wsaddress).filter(Appointment.activity==act).filter(Appointment.initHour==initHour).first()
+        """
+        Appointment for activity, initHour and user, if exists.
+        """
         pulgarBajo = "👎🏽"
         pulgarAlto = "👍🏼"
         if apptmnt is None:
@@ -156,17 +156,28 @@ class AppointmentService(Service):
             for ap in allApps:
                 message +="{}\n".format(ap)
         elif subs is None:
-            activityCredits = hasCredit(address, activity)
-            if activityCredits is not None:
-                saldo, expireDate = drawCredit(address,activity,1)
-                apptmnt.enrolled.append(MakeAppointment(participant))
-                db.session.add(apptmnt)
-                db.session.commit()
-                message = pulgarAlto
-                if saldo >= 0:
-                    message += "\nCréditos disponibles para {}: {} hasta el {}".format(activity,saldo,expireDate)
-            else:
-                message = "Ud. no puede reservar turnos sin inscribirse previamente."
+            """
+            The appointment exists and user has no booked yet
+            """
+            message = pulgarAlto 
+            if act.prePay:
+                activityCredits, _ = hasCredit(address, activity)
+                if activityCredits is not None:
+                    saldo, expireDate = drawCredit(address,activity,1)
+                    if saldo >= 0:
+                        message = "{}\nCréditos disponibles para {}: {} hasta el {}".format(pulgarAlto,activity,saldo)
+                        authorized = True
+                    else:
+                        message = "Ud. no puede reservar turnos sin inscribirse previamente."
+                        authorized = False
+            if act.prePay is False or authorized:
+                try:
+                    apptmnt.enrolled.append(MakeAppointment(participant))
+                    db.session.add(apptmnt)
+                    db.session.commit()
+                except:
+                    db.session.rollback()
+
         else:
             message = "Ud. ya tiene reservado un turno para *{}*: {}".format(apptmnt.activity, apptmnt.initHour)
         return message
@@ -328,11 +339,13 @@ def hasCredit(address: str, activity: str) -> (int,datetime):
 
 def drawCredit(address: str, activity: str, credits: int) -> (int,datetime):
     """
-    Resta credits y retorna el saldo y fecha de vencimiento
+    Draw credits and returns saldo and expire date. It does not commit the
+    change to database, it relays on the actual appointment process which will
+    be done after this action.
     """
     creds =db.session.query(Credit).join('activity',).join('user').filter(Activity.name==activity).filter(User.wsaddress==address).first()
     creds.credits -= credits
     db.session.add(creds)
-    db.session.commit()
+    #db.session.commit() I believe that the final commit should be done when making the actual appointment, that's why I commented it
     return creds.credits,creds.expireDate
 
