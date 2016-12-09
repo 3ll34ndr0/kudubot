@@ -159,7 +159,8 @@ class AppointmentService(Service):
             """
             The appointment exists and user has no booked yet
             """
-            message = pulgarAlto 
+            message = pulgarAlto
+            authorized = False
             print(subs)
             print("PrePay: {}".format(act.prePay))
             if act.prePay:
