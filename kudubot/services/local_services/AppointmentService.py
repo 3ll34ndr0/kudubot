@@ -176,9 +176,9 @@ class AppointmentService(Service):
                     if saldo >= 0:
                         message = "{}\nCréditos disponibles para {}: {} hasta el {}".format(pulgarAlto,activity,saldo)
                         authorized = True
-                    else:
-                        message = "Ud. no puede reservar turnos sin inscribirse previamente."
-                        authorized = False
+                else:
+                     message = "Sin créditos para realizar esta reserva."
+                     authorized = False
             if act.prePay is False or authorized:
                 try:
                     apptmnt.enrolled.append(MakeAppointment(participant))
@@ -343,9 +343,11 @@ class AppointmentService(Service):
                                                                 #handled inside method
 
 def hasCredit(address: str, activity: str) -> (int,datetime):
+    result = None, None
     creds = db.session.query(Credit).join('activity',).join('user').filter(Activity.name==activity).filter(User.wsaddress==address).first()
-    return creds.credits, creds.expireDate
-
+    if creds is not None:
+        result = creds.credits, creds.expireDate
+    return result
 def drawCredit(address: str, activity: str, credits: int) -> (int,datetime):
     """
     Draw credits and returns saldo and expire date. It does not commit the
