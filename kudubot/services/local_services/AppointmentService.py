@@ -160,6 +160,8 @@ class AppointmentService(Service):
             The appointment exists and user has no booked yet
             """
             message = pulgarAlto 
+            print(subs)
+            print("PrePay: {}".format(act.prePay))
             if act.prePay:
                 activityCredits, _ = hasCredit(address, activity)
                 if activityCredits is not None:
