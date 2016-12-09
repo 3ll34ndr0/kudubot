@@ -322,11 +322,11 @@ class AppointmentService(Service):
         return ManageAppointments(address).setup(databaseName)  #exeption
                                                                 #handled inside method
 
-def hasCredit(address: str, activity: str) -> int,datetime:
+def hasCredit(address: str, activity: str) -> (int,datetime):
     creds = db.session.query(Credit).join('activity',).join('user').filter(Activity.name==activity).filter(User.wsaddress==address).first()
     return creds.credits, creds.expireDate
 
-def drawCredit(address: str, activity: str, credits: int) -> int,datetime:
+def drawCredit(address: str, activity: str, credits: int) -> (int,datetime):
     """
     Resta credits y retorna el saldo y fecha de vencimiento
     """
