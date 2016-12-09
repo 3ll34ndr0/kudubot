@@ -158,13 +158,13 @@ class AppointmentService(Service):
         elif subs is None:
             activityCredits = hasCredit(address, activity)
             if activityCredits is not None:
-                saldo = drawCredit(address,activity,1)
+                saldo, expireDate = drawCredit(address,activity,1)
                 apptmnt.enrolled.append(MakeAppointment(participant))
                 db.session.add(apptmnt)
                 db.session.commit()
                 message = pulgarAlto
                 if saldo >= 0:
-                    message += "\nCréditos disponibles para {}: {} hasta el {}".format(activity,saldo)
+                    message += "\nCréditos disponibles para {}: {} hasta el {}".format(activity,saldo,expireDate)
             else:
                 message = "Ud. no puede reservar turnos sin inscribirse previamente."
         else:
