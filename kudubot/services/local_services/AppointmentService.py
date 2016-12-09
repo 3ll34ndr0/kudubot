@@ -82,7 +82,13 @@ class AppointmentService(Service):
         elif message.message_body.lower().split(" ", 2)[1] == 'nuevo':# TODO:Avoid hardcoded Language
             language, _, activity, dayMonthYear_Hour = message.message_body.lower().split(" ", 3)
             reply = self.createAppointment(activity,
-                                           self.datetimeConvert(dayMonthYear_Hour), address)
+                                           self.datetimeConvert(dayMonthYear_Hour),
+                                           address, prePay=False)
+        elif message.message_body.lower().split(" ", 2)[1] == 'prepago':# TODO:Avoid hardcoded Language
+            language, _, activity, dayMonthYear_Hour = message.message_body.lower().split(" ", 3)
+            reply = self.createAppointment(activity,
+                                           self.datetimeConvert(dayMonthYear_Hour),
+                                           address, prePay=True)
         elif message.message_body.lower().split(" ", 2)[0] == 'borrar':
             print("DEBUG: {}".format(message.message_body.lower().split(" ", 2)))
             language, activity, dayMonthYear_Hour = message.message_body.lower().split(" ", 2)
@@ -205,7 +211,7 @@ class AppointmentService(Service):
         return initHour
 
 
-    def createAppointment(self, activity: str, initHour: datetime, address: str) -> str:
+    def createAppointment(self, activity: str, initHour: datetime, address: str, prePay: bool) -> str:
         """
         The bot should ask for a manager after or during
         the activity creation.
@@ -221,12 +227,12 @@ class AppointmentService(Service):
         #ManageAppointments(address, activity,initHour).createAppointment()
         if Activity.query.filter_by(name=activity).first() is None:
            manager = db.session.query(User).filter_by(wsaddress=address).one()
-           act = Activity(activity, manager=manager)
+           act = Activity(activity, manager=manager, prePay=prePay)
            db.session.add(act)
            db.session.commit()
            print(act)
         else:
-           print("Enta al else")
+           print("Entra al else")
            act = db.session.query(Activity).filter_by(name=activity).one()
            print(act)
         appointment = Appointment.query.filter_by(activity=act).filter_by(initHour=initHour)
