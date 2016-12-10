@@ -58,7 +58,8 @@ class AppointmentService(Service):
                    "borrar"     : "es",
                    "cancelar"   : "es",
                    "prepago"    : "es",
-                   "reservas"   : "es"}
+                   "reservas"   : "es",
+                   "asistencia" : "es"}
 
     """
     Keywords for the appointment command
@@ -83,13 +84,13 @@ class AppointmentService(Service):
             #Should give info about appointments for today and tomorrow...
             language = message.message_body.lower()
             reply = str(self.giveInfo(address))
-        elif message.message_body.lower().split(" ",1)[0] == 'turnos': # TODO:Avoid hardcoded Language
-            language, date = message.message_body.lower().split(" ",1)
+        elif userInput.split(" ",1)[0] == 'turnos': # TODO:Avoid hardcoded Language
+            language, date = userInput.split(" ",1)
             reply = str(self.giveInfo(address, date,"1"))
-        elif (userInput == 'reservas' or userInput == 'reserva'): # TODO:Avoid hardcoded Language
+        elif userInput == 'reservas': # TODO:Avoid hardcoded Language
             language = userInput
             reply = self.booked(address)
-        elif (userInput == 'asistencia' or userInput == 'asistencias'): # TODO:Avoid hardcoded Language
+        elif userInput == 'asistencia': # TODO:Avoid hardcoded Language
             language = userInput
             reply = self.attended(address)
         elif message.message_body.lower().split(" ", 2)[1] == 'nuevo':# TODO:Avoid hardcoded Language
