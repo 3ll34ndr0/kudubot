@@ -88,7 +88,7 @@ class AppointmentService(Service):
             reply = str(self.giveInfo(address, date,"1"))
         elif message.message_body.lower().split(" ",1)[0] == 'reservas': # TODO:Avoid hardcoded Language
             language, date = message.message_body.lower().split(" ",1)
-            reply = str(self.booked(address))
+            reply = self.booked(address)
         elif message.message_body.lower().split(" ", 2)[1] == 'nuevo':# TODO:Avoid hardcoded Language
             language, _, activity, dayMonthYear_Hour = message.message_body.lower().split(" ", 3)
             reply = self.createAppointment(activity,
@@ -345,8 +345,10 @@ class AppointmentService(Service):
     def booked(self, address: str) -> str:
         allApps = db.session.query(Appointment).join('enrolled','user').filter(User.wsaddress==address)
         message ="Sus reservas son:\n"
+        print(message)
         for ap in allApps:
                 message +="{}\n".format(ap)
+        print(message)
         return message
 
 
