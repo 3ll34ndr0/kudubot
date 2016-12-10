@@ -20,6 +20,10 @@ import pytz
 from datetime import datetime, timedelta
 tz = "America/Argentina/Cordoba" #TODO: Avoid hardcoded values
 from pytz import country_timezones
+import locale
+locale.setlocale(locale.LC_ALL,'es_AR.utf8')
+
+
 # Guardo aca algunos métodos de pytz pa no olvidarme.
 # country_timezones('ar') tira una lista de los horarios de cada pais, en este caso Argentina.
 #horarioCordoba = pytz.timezone('America/Argentina/Cordoba')
@@ -324,17 +328,11 @@ class AppointmentService(Service):
         else:
             onDay      = self.datetimeConvert(date).replace(hour=0,minute=0)
         untilDay   = onDay + timedelta(int(offset)) # Hardcoded offset
-#        activities = ManageAppointments(address).getActivitiesNames()
-#        print("Bla bla bla {}".format(activities))
         output = "_*:::Horarios disponibles:::*_\n"
-#        for activity in activities:
-#                reply = ManageAppointments(address,activity).reportAvailableAppointments(onDay,untilDay,humanOutput=True)
-#                output += reply
-#        return output
         q = db.session.query(Appointment)
         acts = q.filter(db.and_(Appointment.initHour > onDay, Appointment.initHour < untilDay))
         for row in acts:
-            output += "*{}*: {}\n".format(row.activity,row.initHour)
+            output += "*{}*: {}\n".format(row.activity,row.initHour.strftime("%c").rstrip('00').rstrip(':'))
         return output
 
 
