@@ -56,7 +56,10 @@ class AppointmentService(Service):
                    "turnos"     : "es",
                    "reservar"   : "es",
                    "borrar"     : "es",
-                   "cancelar"   : "es"}
+                   "cancelar"   : "es",
+                   "prepago"    : "es",
+                   "reservas"   : "es"}
+
     """
     Keywords for the appointment command
     """
@@ -83,6 +86,9 @@ class AppointmentService(Service):
         elif message.message_body.lower().split(" ",1)[0] == 'turnos': # TODO:Avoid hardcoded Language
             language, date = message.message_body.lower().split(" ",1)
             reply = str(self.giveInfo(address, date,"1"))
+        elif message.message_body.lower().split(" ",1)[0] == 'reservas': # TODO:Avoid hardcoded Language
+            language, date = message.message_body.lower().split(" ",1)
+            reply = str(self.booked(address))
         elif message.message_body.lower().split(" ", 2)[1] == 'nuevo':# TODO:Avoid hardcoded Language
             language, _, activity, dayMonthYear_Hour = message.message_body.lower().split(" ", 3)
             reply = self.createAppointment(activity,
@@ -335,6 +341,13 @@ class AppointmentService(Service):
             output += "*{}*: {}\n".format(row.activity,row.initHour.strftime("%d %h %H:%M"))
 #            output += "*{}*: {}\n".format(row.activity,row.initHour.strftime("%c").rstrip('00').rstrip(':'))
         return output
+
+    def booked(self, address: str) -> str:
+        allApps = db.session.query(Appointment).join('enrolled','user').filter(User.wsaddress==address)
+        message ="Sus reservas son:\n"
+        for ap in allApps:
+                message +="{}\n".format(ap)
+        return message
 
 
     def setupDB(self, databaseName: str, address: str) -> str:
