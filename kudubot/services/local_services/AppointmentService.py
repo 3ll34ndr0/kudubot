@@ -115,7 +115,7 @@ class AppointmentService(Service):
         #be telephoneNumber with the @s.whatsapp.net ...
 
         self.connection.last_used_language = self.appointment[language]
-        print("DEBUG: {} is of type {}".format(reply, type(reply)))
+        print("DEBUG: {} is of type {}.\n Language is {}".format(reply,type(reply),self.appointment[language]))
 #        self.connection.last_used_timezone = tz
         reply_message = self.generate_reply_message(message, "Appointments...", reply)
         self.send_text_message(reply_message)
@@ -204,7 +204,7 @@ class AppointmentService(Service):
     def datetimeConvert(self,dayMonthYear_Hour: str) -> datetime:
         #Will convert human date time to datetime object:
         #TODO: Add locales support.
-        c = pdt.Constants(localeID=self.connection.last_used_language, usePyICU=True)
+        c = pdt.Constants(localeID="es", usePyICU=True)
         p = pdt.Calendar(c)
         initHour, tipoFecha = p.parseDT(dayMonthYear_Hour, tzinfo=pytz.timezone(tz))
         print (dayMonthYear_Hour,initHour, tz, pytz.timezone(tz), tipoFecha)
