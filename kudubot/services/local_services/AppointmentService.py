@@ -332,7 +332,8 @@ class AppointmentService(Service):
         q = db.session.query(Appointment)
         acts = q.filter(db.and_(Appointment.initHour > onDay, Appointment.initHour < untilDay))
         for row in acts:
-            output += "*{}*: {}\n".format(row.activity,row.initHour.strftime("%c").rstrip(':').rstrip('00'))
+            output += "*{}*: {}\n".format(row.activity,row.initHour.strftime("%d %h %H:%M"))
+#            output += "*{}*: {}\n".format(row.activity,row.initHour.strftime("%c").rstrip('00').rstrip(':'))
         return output
 
 
