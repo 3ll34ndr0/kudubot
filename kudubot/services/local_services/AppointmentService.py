@@ -87,7 +87,7 @@ class AppointmentService(Service):
             language, date = message.message_body.lower().split(" ",1)
             reply = str(self.giveInfo(address, date,"1"))
         elif userInput == 'reservas' or userInput == 'reserva': # TODO:Avoid hardcoded Language
-            language, date = message.message_body.lower().split(" ",1)
+            language = userInput
             reply = self.booked(address)
         elif message.message_body.lower().split(" ", 2)[1] == 'nuevo':# TODO:Avoid hardcoded Language
             language, _, activity, dayMonthYear_Hour = message.message_body.lower().split(" ", 3)
