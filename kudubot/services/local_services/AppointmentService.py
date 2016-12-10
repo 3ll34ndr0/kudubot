@@ -78,15 +78,15 @@ class AppointmentService(Service):
             address = message.get_individual_address()
             pass
             #TODO: Take into account Telegram ...
-
-        if len(message.message_body.lower().split(" ",1)) == 1:
+        userInput = message.message_body.lower()
+        if userInput == 'turnos':
             #Should give info about appointments for today and tomorrow...
             language = message.message_body.lower()
             reply = str(self.giveInfo(address))
         elif message.message_body.lower().split(" ",1)[0] == 'turnos': # TODO:Avoid hardcoded Language
             language, date = message.message_body.lower().split(" ",1)
             reply = str(self.giveInfo(address, date,"1"))
-        elif message.message_body.lower().split(" ",1)[0] == 'reservas': # TODO:Avoid hardcoded Language
+        elif userInput == 'reservas' or userInput == 'reserva': # TODO:Avoid hardcoded Language
             language, date = message.message_body.lower().split(" ",1)
             reply = self.booked(address)
         elif message.message_body.lower().split(" ", 2)[1] == 'nuevo':# TODO:Avoid hardcoded Language
