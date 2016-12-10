@@ -86,9 +86,12 @@ class AppointmentService(Service):
         elif message.message_body.lower().split(" ",1)[0] == 'turnos': # TODO:Avoid hardcoded Language
             language, date = message.message_body.lower().split(" ",1)
             reply = str(self.giveInfo(address, date,"1"))
-        elif userInput == 'reservas' or userInput == 'reserva': # TODO:Avoid hardcoded Language
+        elif (userInput == 'reservas' or userInput == 'reserva'): # TODO:Avoid hardcoded Language
             language = userInput
             reply = self.booked(address)
+        elif (userInput == 'asistencia' or userInput == 'asistencias'): # TODO:Avoid hardcoded Language
+            language = userInput
+            reply = self.attended(address)
         elif message.message_body.lower().split(" ", 2)[1] == 'nuevo':# TODO:Avoid hardcoded Language
             language, _, activity, dayMonthYear_Hour = message.message_body.lower().split(" ", 3)
             reply = self.createAppointment(activity,
@@ -343,13 +346,23 @@ class AppointmentService(Service):
         return output
 
     def booked(self, address: str) -> str:
-        allApps = db.session.query(Appointment).join('enrolled','user').filter(User.wsaddress==address)
+        allApps = db.session.query(Appointment).join('enrolled','user').filter(
+                 User.wsaddress==address).filter(
+                 Appointment.initHour > datetime.now())
         message ="Sus reservas son:\n"
-        print(message)
         for ap in allApps:
                 message +="{}\n".format(ap)
-        print(message)
         return message
+
+    def attended(self, address: str) -> str:
+        allApps = db.session.query(Appointment).join('enrolled','user').filter(
+                 User.wsaddress==address).filter(
+                 Appointment.initHour < datetime.now())
+        message ="Asistió a:\n"
+        for ap in allApps:
+                message +="{}\n".format(ap)
+        return message
+
 
 
     def setupDB(self, databaseName: str, address: str) -> str:
