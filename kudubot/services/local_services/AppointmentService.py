@@ -190,8 +190,7 @@ class AppointmentService(Service):
         # Do your job
 #        return ManageAppointments(address, activity,initHour).makeAppointment(address)
         act = db.session.query(Activity).filter_by(name=activity).one()
-        allApps =
-        db.session.query(Appointment).filter(Appointment.activity==act).filter(Appointment.initHour>datetime.utcnow())
+        allApps = db.session.query(Appointment).filter(Appointment.activity==act).filter(Appointment.initHour>datetime.utcnow())
         apptmnt = db.session.query(Appointment).filter_by(initHour=initHour).filter_by(activity=act).first()
         participant = db.session.query(User).filter_by(wsaddress=address).one()
         print("Vamos a ver si {} tiene un turno en {} ".format(participant.name, apptmnt))
