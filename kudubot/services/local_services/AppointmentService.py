@@ -30,7 +30,26 @@ locale.setlocale(locale.LC_ALL,'es_AR.utf8')
 #horarioCordoba.zone
 
 from manager import ManageAppointments
-
+CREDITS = [
+        {
+                    'name': 'address',
+                    'message': 'Enviame el contacto a quien se le darán los créditos'
+                },
+                {
+                    'name': 'credits',
+                    'message': 'Por favor ingrese la cantidad de créditos que desea otorgar',
+                    'required': False
+                },
+                {
+                    'name': 'activity',
+                    'message': 'Para qué actividad serán los créditos?',
+                },
+#                {
+#                    'name': 'place',
+#                    'message': 'Please send me the place of event (or /skip)',
+#                            'required': False
+#                },
+                ]
 class AppointmentService(Service):
     """
     Approintments service
@@ -59,6 +78,8 @@ class AppointmentService(Service):
                    "cancelar"   : "es",
                    "prepago"    : "es",
                    "reservas"   : "es",
+                   "reserva"    : "es",
+                   "asistencias": "es",
                    "asistencia" : "es"}
 
     """
@@ -82,48 +103,57 @@ class AppointmentService(Service):
         userInput = message.message_body.lower()
         if userInput == 'turnos':
             #Should give info about appointments for today and tomorrow...
-            language = message.message_body.lower()
+            language = userInput
             reply = str(self.giveInfo(address))
         elif userInput.split(" ",1)[0] == 'turnos': # TODO:Avoid hardcoded Language
             language, date = userInput.split(" ",1)
             reply = str(self.giveInfo(address, date,"1"))
+        elif userInput == 'reserva': # TODO:Avoid hardcoded Language
+            language = userInput
+            reply = self.booked(address)
         elif userInput == 'reservas': # TODO:Avoid hardcoded Language
             language = userInput
             reply = self.booked(address)
+        elif userInput == 'asistencias': # TODO:Avoid hardcoded Language
+            language = userInput
+            reply = self.attended(address)
         elif userInput == 'asistencia': # TODO:Avoid hardcoded Language
             language = userInput
             reply = self.attended(address)
-        elif message.message_body.lower().split(" ", 2)[1] == 'nuevo':# TODO:Avoid hardcoded Language
-            language, _, activity, dayMonthYear_Hour = message.message_body.lower().split(" ", 3)
+        elif userInput.split(" ", 2)[1] == 'nuevo':# TODO:Avoid hardcoded Language
+            language, _, activity, dayMonthYear_Hour = userInput.split(" ", 3)
             reply = self.createAppointment(activity,
                                            self.datetimeConvert(dayMonthYear_Hour),
                                            address, prePay=False)
-        elif message.message_body.lower().split(" ", 2)[1] == 'prepago':# TODO:Avoid hardcoded Language
-            language, _, activity, dayMonthYear_Hour = message.message_body.lower().split(" ", 3)
+        elif userInput.split(" ", 2)[1] == 'prepago':# TODO:Avoid hardcoded Language
+            language, _, activity, dayMonthYear_Hour = userInput.split(" ", 3)
             reply = self.createAppointment(activity,
                                            self.datetimeConvert(dayMonthYear_Hour),
                                            address, prePay=True)
-        elif message.message_body.lower().split(" ", 2)[0] == 'borrar':
-            print("DEBUG: {}".format(message.message_body.lower().split(" ", 2)))
-            language, activity, dayMonthYear_Hour = message.message_body.lower().split(" ", 2)
+        elif userInput.split(" ", 2)[0] == 'borrar':
+            print("DEBUG: {}".format(userInput.split(" ", 2)))
+            language, activity, dayMonthYear_Hour = userInput.split(" ", 2)
             reply = self.deleteAppointment(activity,
                                            self.datetimeConvert(dayMonthYear_Hour),
                                            address)
             print("DEBUG: {}".format(reply))
-        elif message.message_body.lower().split(" ", 2)[1] == 'almacen':
-            language, _, databaseName = message.message_body.lower().split(" ", 2)
+        elif userInput.split(" ", 2)[1] == 'almacen':
+            language, _, databaseName = userInput.split(" ", 2)
             if Authenticator(self.connection.identifier).is_from_admin(message):
                 reply = self.setupDB(databaseName, address)
             else:
                 reply = "UR Not allowed 2 do this"
-        elif message.message_body.lower().split(" ", 2)[0] == 'cancelar':
-            language, activity, dayMonthYear_Hour = message.message_body.lower().split(" ", 2)
+        elif userInput.split(" ", 2)[0] == 'cancelar':
+            language, activity, dayMonthYear_Hour = userInput.split(" ", 2)
             reply = self.cancelAppointment(activity, self.datetimeConvert(dayMonthYear_Hour), address)
 
-        else:
-            print("DEBUG: Entra al  ultimo else...")
-            language, activity, dayMonthYear_Hour = message.message_body.lower().split(" ", 2)
+        elif userInput.split(" ", 2)[0] == 'reservar':
+            language, activity, dayMonthYear_Hour = userInput.split(" ", 2)
             reply = self.makeAppointment(activity, self.datetimeConvert(dayMonthYear_Hour), address)
+        elif userInput.split(" ")[0] == 'créditos':
+            language, credits, activity, address = userInput.split(" ")
+            reply = self.giveCredits(address, activity, credits)
+
         # TODO: Accept double spaces if present...
         # address in WA this is the
         #be telephoneNumber with the @s.whatsapp.net ...
@@ -160,7 +190,8 @@ class AppointmentService(Service):
         # Do your job
 #        return ManageAppointments(address, activity,initHour).makeAppointment(address)
         act = db.session.query(Activity).filter_by(name=activity).one()
-        allApps = db.session.query(Appointment).filter(Appointment.activity==act).filter(Appointment.initHour>datetime.now())
+        allApps =
+        db.session.query(Appointment).filter(Appointment.activity==act).filter(Appointment.initHour>datetime.utcnow())
         apptmnt = db.session.query(Appointment).filter_by(initHour=initHour).filter_by(activity=act).first()
         participant = db.session.query(User).filter_by(wsaddress=address).one()
         print("Vamos a ver si {} tiene un turno en {} ".format(participant.name, apptmnt))
@@ -267,7 +298,7 @@ class AppointmentService(Service):
         print("El ... ... {} y {} ".format(initHour,act))
         apptmnt = db.session.query(Appointment).filter_by(initHour=initHour).filter_by(activity=act).first()
         print(apptmnt)
-        message = "Voy a borrar *{}*".format(apptmnt)
+        message = "Voy a borrar {} ".format(apptmnt)
         db.session.delete(apptmnt)
         try:
             erro = db.session.commit()
@@ -334,7 +365,7 @@ class AppointmentService(Service):
         offset: How many days will to "date"
         """
         if date is None:
-            onDay = datetime.now()
+            onDay = datetime.utcnow()
         else:
             onDay      = self.datetimeConvert(date).replace(hour=0,minute=0)
         untilDay   = onDay + timedelta(int(offset)) # Hardcoded offset
@@ -349,7 +380,7 @@ class AppointmentService(Service):
     def booked(self, address: str) -> str:
         allApps = db.session.query(Appointment).join('enrolled','user').filter(
                  User.wsaddress==address).filter(
-                 Appointment.initHour > datetime.now())
+                 Appointment.initHour > datetime.utcnow())
         message ="Sus reservas son:\n"
         for ap in allApps:
                 message +="{}\n".format(ap)
@@ -358,11 +389,12 @@ class AppointmentService(Service):
     def attended(self, address: str) -> str:
         allApps = db.session.query(Appointment).join('enrolled','user').filter(
                  User.wsaddress==address).filter(
-                 Appointment.initHour < datetime.now())
+                 Appointment.initHour < datetime.utcnow())
         message ="Asistió a:\n"
         for ap in allApps:
                 message +="{}\n".format(ap)
         return message
+
 
 
 
@@ -387,4 +419,28 @@ def drawCredit(address: str, activity: str, credits: int) -> (int,datetime):
     db.session.add(creds)
     #db.session.commit() I believe that the final commit should be done when making the actual appointment, that's why I commented it
     return creds.credits,creds.expireDate
+
+def giveCredits(self, address: str, activity: str, credits: int) -> str:
+    creds =db.session.query(Credit).join('activity',).join('user').filter(Activity.name==activity).filter(User.wsaddress==address).first()
+    if creds is None:
+        act = db.session.query(Activity).filter_by(name=activity).one()
+        creds = Credit(user, act, credits)
+        """
+        First time credit is given
+        """
+    else:
+       creds.credits += credits
+       if creds.expireDate < datetime.utcnow():
+           creds.expireDate = datetime.utcnow() + timedelta(days=30)
+           """
+           30 days after now (if credits already expired)
+           """
+       else:
+           creds.expireDate += timedelta(days=30)
+           """
+           30 days after the current expire date
+           """
+    db.session.add(creds)
+    db.session.commit()
+    return "Ud. tiene {} créditos con vencimiento el día {}".format(creds.credits, creds.expireDate.strftime("%d %h %Y"))
 
