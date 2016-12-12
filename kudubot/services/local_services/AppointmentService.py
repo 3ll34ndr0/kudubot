@@ -110,7 +110,14 @@ class AppointmentService(Service):
         elif userInput.split(" ")[0] == 'créditos':
             print("Entra pa dar créditos")
             language, credits, activity, address = userInput.split(" ")
-            reply = giveCredits(address, activity, credits)
+            if len(userInput)==1:
+                """
+                Consulta de saldo
+                """
+                saldo, expireDate = hasCredit(address, activity)
+                reply = "Créditos disponibles para {}: {} hasta el {}".format(activity,saldo, expireDate.strftime("%d %h %Y"))
+            else:
+                reply = giveCredits(address, activity, credits)
         elif userInput.split(" ",1)[0] == 'turnos': # TODO:Avoid hardcoded Language
             language, date = userInput.split(" ",1)
             reply = str(self.giveInfo(address, date,"1"))
