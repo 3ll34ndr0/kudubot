@@ -126,7 +126,7 @@ class AppointmentService(Service):
                 reply = ""
                 if creds is not None:
                     for c in creds:
-                        reply += "*{}*: {} vencen {}".format(c.activity,
+                        reply += "*{}*: {} vencen {}\n".format(c.activity,
                                                       c.credits,
                                                       c.expireDate.strftime("%d %h %Y"))
                 else:
