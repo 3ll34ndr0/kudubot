@@ -421,7 +421,7 @@ def drawCredit(address: str, activity: str, credits: int) -> (int,datetime):
     #db.session.commit() I believe that the final commit should be done when making the actual appointment, that's why I commented it
     return creds.credits,creds.expireDate
 
-def giveCredits(self, address: str, activity: str, credits: int) -> str:
+def giveCredits(address: str, activity: str, credits: int) -> str:
     usr = User.query.filter_by(wsaddress=address).first()
     if usr is None:
         result = "No hay ningún usuario con ese teléfono"
