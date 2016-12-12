@@ -423,6 +423,7 @@ def drawCredit(address: str, activity: str, credits: int) -> (int,datetime):
 
 def giveCredits(address: str, activity: str, credits: int) -> str:
     usr = User.query.filter_by(wsaddress="{}@s.whatsapp.net".format(address)).first()
+    query = dbsession.query(User).filter(User.wsaddress.like('%ed%'))
     """
     TODO: Buscar usando una expresión regular o algo más difuso...
     """
@@ -452,6 +453,6 @@ def giveCredits(address: str, activity: str, credits: int) -> str:
                """
         db.session.add(creds)
         db.session.commit()
-        result = "Ud. tiene {} créditos con vencimiento el día {}".format(creds.credits, creds.expireDate.strftime("%d %h %Y"))
+        result = "{} tiene {} créditos para {} con vencimiento el día {}".format(usr.name, creds.credits, act.name, creds.expireDate.strftime("%d %h %Y"))
     return result
 
