@@ -123,7 +123,7 @@ class AppointmentService(Service):
                 """
                 language = userInput
                 creds = db.session.query(Credit).join('activity',).join('user').filter(User.wsaddress==address)
-                reply = ""
+                reply = "Créditos"
                 if creds is not None:
                     for c in creds:
                         reply += "\n*{}*: {} vencen {}".format(c.activity,
