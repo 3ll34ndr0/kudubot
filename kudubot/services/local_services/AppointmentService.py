@@ -422,7 +422,10 @@ def drawCredit(address: str, activity: str, credits: int) -> (int,datetime):
     return creds.credits,creds.expireDate
 
 def giveCredits(address: str, activity: str, credits: int) -> str:
-    usr = User.query.filter_by(wsaddress=address).first()
+    usr = User.query.filter_by(wsaddress="{}@s.whatsapp.net".format(address)).first()
+    """
+    TODO: Buscar usando una expresión regular o algo más difuso...
+    """
     if usr is None:
         result = "No hay ningún usuario con ese teléfono"
     else:
