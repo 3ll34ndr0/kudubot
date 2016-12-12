@@ -125,7 +125,8 @@ class AppointmentService(Service):
                 creds = db.session.query(Credit).join('activity',).join('user').filter(User.wsaddress==address)
                 reply = ""
                 if creds is not None:
-                    reply += "{}: {} vencen {}".format(Activity.name,
+                    for c in creds:
+                        reply += "{}: {} vencen {}".format(creds.activity,
                                                       creds.credits,
                                                       creds.expireDate)
                 else:
