@@ -439,7 +439,7 @@ def giveCredits(address: str, activity: str, credits: int) -> str:
             First time credit is given
             """
         else:
-           creds.credits += credits
+           creds.credits += int(credits)
            if creds.expireDate < datetime.utcnow():
                creds.expireDate = datetime.utcnow() + timedelta(days=30)
                """
