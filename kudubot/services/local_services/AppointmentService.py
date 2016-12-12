@@ -469,7 +469,8 @@ class AppointmentService(Service):
 
             message = self.update_draft(event, user_id, current_field)
         else:
-            message = ":)"
+            self.store.new_draft(user_id)
+            message = "Let's create a new event. First, send me name of the event."
         return message
 
 
