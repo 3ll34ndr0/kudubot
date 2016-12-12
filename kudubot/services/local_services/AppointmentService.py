@@ -464,7 +464,7 @@ class AppointmentService(Service):
             current_field = draft['current_field']
             field = FIELDS[current_field]
 
-            event[field['name']] = parse_fields(field['name'], text)
+            event[field['name']] = text
             current_field += 1
 
             message = self.update_draft(event, user_id, current_field)
