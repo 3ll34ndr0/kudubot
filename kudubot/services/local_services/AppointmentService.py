@@ -22,7 +22,10 @@ tz = "America/Argentina/Cordoba" #TODO: Avoid hardcoded values
 from pytz import country_timezones
 import locale
 locale.setlocale(locale.LC_ALL,'es_AR.utf8')
-
+### 
+# Implementación de comandos interactivos #CI:
+from tinydb import TinyDB, Query
+#CI
 
 # Guardo aca algunos métodos de pytz pa no olvidarme.
 # country_timezones('ar') tira una lista de los horarios de cada pais, en este caso Argentina.
@@ -30,19 +33,23 @@ locale.setlocale(locale.LC_ALL,'es_AR.utf8')
 #horarioCordoba.zone
 
 from manager import ManageAppointments
-CREDITS = [
+
+#Start of CI
+FIELDS = [
         {
                     'name': 'address',
-                    'message': 'Enviame el contacto a quien se le darán los créditos'
+                    'message': 'Enviame el contacto a quien se le darán los créditos',
+                    'required': True
                 },
                 {
                     'name': 'credits',
                     'message': 'Por favor ingrese la cantidad de créditos que desea otorgar',
-                    'required': False
+                    'required': True
                 },
                 {
                     'name': 'activity',
                     'message': 'Para qué actividad serán los créditos?',
+                    'required': True
                 },
 #                {
 #                    'name': 'place',
@@ -50,6 +57,8 @@ CREDITS = [
 #                            'required': False
 #                },
                 ]
+#End of #CI
+
 class AppointmentService(Service):
     """
     Approintments service
@@ -81,11 +90,13 @@ class AppointmentService(Service):
                    "reserva"    : "es",
                    "asistencias": "es",
                    "asistencia" : "es",
-                   "créditos"   : "es"}
+                   "créditos"   : "es",
+                   "acreditar"  : "es"}
 
     """
     Keywords for the appointment command
     """
+
 
     def process_message(self, message: Message) -> None:
         """
@@ -101,6 +112,11 @@ class AppointmentService(Service):
             address = message.get_individual_address()
             pass
             #TODO: Take into account Telegram ...
+
+        #Start of CI
+        self.store = TinyDBStore()
+        #End of #CI
+
         userInput = message.message_body.lower()
         print("De bug: {}".format(userInput.split(" ")[0]))
         if userInput == 'turnos':
@@ -123,7 +139,7 @@ class AppointmentService(Service):
                 """
                 language = userInput
                 creds = db.session.query(Credit).join('activity',).join('user').filter(User.wsaddress==address)
-                reply = "Créditos"
+                reply = "Créditos:"
                 if creds is not None:
                     for c in creds:
                         reply += "\n*{}*: {} vencen {}".format(c.activity,
@@ -137,6 +153,9 @@ class AppointmentService(Service):
                 """
                 language, credits, activity, address = userInput.split(" ")
                 reply = giveCredits(address, activity, credits)
+        elif userInput=="acreditar":
+            reply = messageCredit(address, userInput):
+
         elif userInput.split(" ",1)[0] == 'turnos': # TODO:Avoid hardcoded Language
             language, date = userInput.split(" ",1)
             reply = str(self.giveInfo(address, date,"1"))
@@ -428,6 +447,61 @@ class AppointmentService(Service):
     def setupDB(self, databaseName: str, address: str) -> str:
         return ManageAppointments(address).setup(databaseName)  #exeption
                                                                 #handled inside method
+#######################################################################
+# Start of Lukaville code
+# Get a copy from the licence:
+# https://github.com/lukaville/create-event-bot/blob/master/LICENSE
+
+    def messageCredit(self, user_id, userInput):
+        text = userInput
+        draft = self.store.get_draft(user_id)
+
+        if draft:
+            event = draft['event']
+            current_field = draft['current_field']
+            field = FIELDS[current_field]
+
+            event[field['name']] = parse_fields(field['name'], text)
+            current_field += 1
+
+            self.update_draft(event, user_id, current_field)
+
+    def skip_command(self, user_id):
+        draft = self.store.get_draft(user_id)
+
+        if draft:
+            current_field = draft['current_field']
+            field = FIELDS[current_field]
+
+            if field['required']:
+                message = "This field is required! " + field['message'])
+            else:
+                event = draft['event']
+                current_field += 1
+                self.update_draft(event, user_id, current_field)
+
+    def update_draft(self, event, user_id, current_field):
+        self.store.update_draft(user_id, event, current_field)
+
+        if current_field <= len(FIELDS) - 1:
+            message = FIELDS[current_field]['message']
+        else:
+            event['user_id'] = user_id
+            message = self.parseMessage(user_id, event)
+        return message
+
+    def parseMessage(self, user_id, event):
+        """
+        TODO: This must be changed
+        """
+        # Parse de dictionary in event and call the function
+        print(event)
+        self.store.remove_draft(user_id)
+        # Puesta a cero de la 'memoria'
+        return(repr(event))
+# end of Lukaville code
+#######################################################################
+
 
 def hasCredit(address: str, activity: str) -> (int,datetime):
     result = None, None
@@ -482,4 +556,48 @@ def giveCredits(address: str, activity: str, credits: int) -> str:
         db.session.commit()
         result = "{} tiene {} créditos para {} con vencimiento el día {}".format(usr.name, creds.credits, act.name, creds.expireDate.strftime("%d %h %Y"))
     return result
+
+##
+# The next code belongs to the
+# event-bot project from (Nickolay Chameev lukaville) http://github.com/lukaville/
+# https://github.com/lukaville/create-event-bot/blob/master/store.py
+# Get a copy from the licence:
+# https://github.com/lukaville/create-event-bot/blob/master/LICENSE
+
+class TinyDBStore(object):
+    def __init__(self):
+        self.drafts_db = TinyDB('event_drafts.json')
+
+
+   # Drafts
+    def contains_draft(self, user_id):
+        return self.drafts_db.contains(Query().user_id == user_id)
+
+
+    def new_draft(self, user_id):
+        if self.contains_draft(user_id):
+            self.drafts_db.remove(Query().user_id == user_id)
+
+        self.drafts_db.insert({
+            'user_id': user_id,
+            'current_field': 0,
+            'event': {}
+        })
+
+
+    def update_draft(self, user_id, event, current_field):
+        self.drafts_db.update({
+            'user_id': user_id,
+            'current_field': current_field,
+            'event': event
+        }, Query().user_id == user_id)
+
+
+    def get_draft(self, user_id):
+        return self.drafts_db.get(Query().user_id == user_id)
+
+
+    def remove_draft(self, user_id):
+        self.drafts_db.remove(Query().user_id == user_id)
+
 
