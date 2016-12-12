@@ -441,14 +441,19 @@ SALIDA LLEGADA EMPRESA
 23:30 05:15    *FLECHA BUS* _Semi Cama_
 23:30 05:15    *FLECHA BUS* _Cama Ejecutivo_
 """, '#parana-concordia': """SALIDA LLEGADA EMPRESA
-05:45	10:20	*FLECHA BUS*
-08:15	12:35	*FLECHA BUS*
-11:15	15:30	*ZENIT*
-13:30	17:30	*RAPIDO TATA*
-15:30	20:20	*ZENIT*
-15:35	19:40	*RAPIDO* _Solo Viernes_
-18:45	23:00	*FLECHA BUZ*
-18:55	23:00   *RAPIDO* _Solo Viernes_
-20:10	00:20	*RAPIDO TATA* _Excepto Sabado y Domingo_
-23:55	04:05	*FLECHA BUS* _Solo Lunes_
+05:45	10:20	   *FLECHA BUS*
+08:15	12:35	   *FLECHA BUS*
+11:15	15:30	   *ZENIT*
+13:30	17:30	   *RAPIDO TATA*
+15:30	20:20	   *ZENIT*
+15:35	19:40	   *RAPIDO* _Solo Viernes_
+18:45	23:00	   *FLECHA BUZ*
+18:55	23:00    *RAPIDO* _Solo Viernes_
+20:10	00:20	   *RAPIDO TATA* _Excepto Sabado y Domingo_
+23:55	04:05	   *FLECHA BUS* _Solo Lunes_
+""", '#santa fe-concordia': """SALIDA LLEGADA EMPRESA
+01:20	06:10	   *ZENIT*
+12:40	17:30	   *RAPIDO TATA*
+21:15	01:30	   *EXPRESO SINGER*
+23:10	04:05	   *FLECHA BUS*
 """,}
