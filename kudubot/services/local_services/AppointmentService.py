@@ -154,6 +154,7 @@ class AppointmentService(Service):
                 language, credits, activity, address = userInput.split(" ")
                 reply = giveCredits(address, activity, credits)
         elif userInput=="acreditar":
+            language = userInput
             reply = self.messageCredit(address, userInput)
 
         elif userInput.split(" ",1)[0] == 'turnos': # TODO:Avoid hardcoded Language
