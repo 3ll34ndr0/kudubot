@@ -474,7 +474,7 @@ class AppointmentService(Service):
             field = FIELDS[current_field]
 
             if field['required']:
-                message = "This field is required! " + field['message'])
+                message = "This field is required! " + field['message']
             else:
                 event = draft['event']
                 current_field += 1
