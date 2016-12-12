@@ -465,7 +465,9 @@ class AppointmentService(Service):
             event[field['name']] = parse_fields(field['name'], text)
             current_field += 1
 
-            self.update_draft(event, user_id, current_field)
+            message = self.update_draft(event, user_id, current_field)
+        return message
+
 
     def skip_command(self, user_id):
         draft = self.store.get_draft(user_id)
@@ -479,7 +481,9 @@ class AppointmentService(Service):
             else:
                 event = draft['event']
                 current_field += 1
-                self.update_draft(event, user_id, current_field)
+                message = self.update_draft(event, user_id, current_field)
+            return message
+
 
     def update_draft(self, event, user_id, current_field):
         self.store.update_draft(user_id, event, current_field)
