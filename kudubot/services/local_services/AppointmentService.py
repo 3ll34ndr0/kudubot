@@ -199,7 +199,7 @@ class AppointmentService(Service):
             language, activity, dayMonthYear_Hour = userInput.split(" ", 2)
             reply = self.makeAppointment(activity, self.datetimeConvert(dayMonthYear_Hour), address)
         else:
-            language = userInput
+            language = 'es' 
             reply = self.messageCredit(address, userInput)
 
 
@@ -220,8 +220,9 @@ class AppointmentService(Service):
 
         :return: True if input is valid, False otherwise
         """
-        regex = "^" + Service.regex_string_from_dictionary_keys([AppointmentService.appointment]) \
-                + ".*$"
+#        regex = "^" + Service.regex_string_from_dictionary_keys([AppointmentService.appointment]) \
+#                + ".*$"
+        regex = ".*"
         return re.search(re.compile(regex), message.message_body.lower())
     def makeAppointment(self, activity: str, initHour: datetime, address: str) -> str:
         """
