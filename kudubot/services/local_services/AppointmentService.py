@@ -110,12 +110,14 @@ class AppointmentService(Service):
         elif userInput.split(" ")[0] == 'créditos':
             print("Entra pa dar créditos")
             language, credits, activity, address = userInput.split(" ")
-            if len(userInput)==1:
+            if len(userInput.split(" ")==2:
+                activity = userInput.split(" ")[1]
                 """
                 Consulta de saldo
                 """
-                saldo, expireDate = hasCredit(address, activity)
-                reply = "Créditos disponibles para {}: {} hasta el {}".format(activity,saldo, expireDate.strftime("%d %h %Y"))
+                credits, expireDate = hasCredit(address, activity)
+                reply = "{}\nCréditos disponibles para {}: {} hasta el {}".format(activity,credits, expireDate.strftime("%d %h %Y"))
+
             else:
                 reply = giveCredits(address, activity, credits)
         elif userInput.split(" ",1)[0] == 'turnos': # TODO:Avoid hardcoded Language
@@ -230,7 +232,7 @@ class AppointmentService(Service):
                         message = "{}\nCréditos disponibles para {}: {} hasta el {}".format(pulgarAlto,activity,saldo, expireDate.strftime("%d %h %Y"))
                         authorized = True
                     else:
-                        message = "Sin créditos para realizar esta reserva."
+                        message = "Sin créditos."
                         authorized = False
             if act.prePay is False or authorized:
                 try:
