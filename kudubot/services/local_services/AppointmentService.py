@@ -112,12 +112,26 @@ class AppointmentService(Service):
             if len(userInput.split(" "))==2:
                 language, activity = userInput.split(" ")
                 """
-                Consulta de saldo
+                Consulta de saldo para una actividad específica.
                 """
                 credits, expireDate = hasCredit(address, activity)
                 reply = "Créditos disponibles para *{}*: {} hasta el {}".format(activity,credits, expireDate.strftime("%d %h %Y"))
 
+            elif len(userInput.split(" "))==1:
+                """
+                Consulta de saldo en todas las actividades
+                """
+                language = userInput
+                creds = db.session.query(Credit).join('activity',).join('user').filter(User.wsaddress==address).first()
+                reply = ""
+                if creds is not None:
+                    reply += "{}: {} vencen {}"creds.activity, creds.credits, creds.expireDate
+                else:
+                    reply = "No tiene ningún crédito"
             else:
+                """
+                Give credits to a specific address for given activity
+                """
                 language, credits, activity, address = userInput.split(" ")
                 reply = giveCredits(address, activity, credits)
         elif userInput.split(" ",1)[0] == 'turnos': # TODO:Avoid hardcoded Language
