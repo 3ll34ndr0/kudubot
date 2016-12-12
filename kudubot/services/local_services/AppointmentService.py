@@ -122,10 +122,12 @@ class AppointmentService(Service):
                 Consulta de saldo en todas las actividades
                 """
                 language = userInput
-                creds = db.session.query(Credit).join('activity',).join('user').filter(User.wsaddress==address).first()
+                creds = db.session.query(Credit).join('activity',).join('user').filter(User.wsaddress==address)
                 reply = ""
                 if creds is not None:
-                    reply += "{}: {} vencen {}"creds.activity, creds.credits, creds.expireDate
+                    reply += "{}: {} vencen {}".format(creds.activity,
+                                                      creds.credits,
+                                                      creds.expireDate)
                 else:
                     reply = "No tiene ningún crédito"
             else:
