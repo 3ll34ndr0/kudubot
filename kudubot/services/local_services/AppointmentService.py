@@ -423,7 +423,8 @@ def drawCredit(address: str, activity: str, credits: int) -> (int,datetime):
 
 def giveCredits(address: str, activity: str, credits: int) -> str:
     usr = User.query.filter_by(wsaddress="{}@s.whatsapp.net".format(address)).first()
-    query = dbsession.query(User).filter(User.wsaddress.like('%ed%'))
+    query = db.session.query(User).filter(User.wsaddress.like(address))
+    print("DEE BUUUG: {}".format(query.all))
     """
     TODO: Buscar usando una expresión regular o algo más difuso...
     """
