@@ -199,7 +199,7 @@ class AppointmentService(Service):
             language, activity, dayMonthYear_Hour = userInput.split(" ", 2)
             reply = self.makeAppointment(activity, self.datetimeConvert(dayMonthYear_Hour), address)
         else:
-            language = 'es' 
+            language = 'acreditar'
             reply = self.messageCredit(address, userInput)
 
 
