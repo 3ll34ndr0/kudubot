@@ -101,10 +101,15 @@ class AppointmentService(Service):
             pass
             #TODO: Take into account Telegram ...
         userInput = message.message_body.lower()
+        print("De bug: {}".format(userInput.split(" ")[0]))
         if userInput == 'turnos':
             #Should give info about appointments for today and tomorrow...
             language = userInput
             reply = str(self.giveInfo(address))
+        elif userInput.split(" ")[0] == 'créditos':
+            print("Entra pa dar créditos")
+            language, credits, activity, address = userInput.split(" ")
+            reply = self.giveCredits(address, activity, credits)
         elif userInput.split(" ",1)[0] == 'turnos': # TODO:Avoid hardcoded Language
             language, date = userInput.split(" ",1)
             reply = str(self.giveInfo(address, date,"1"))
@@ -149,10 +154,6 @@ class AppointmentService(Service):
         elif userInput.split(" ", 2)[0] == 'reservar':
             language, activity, dayMonthYear_Hour = userInput.split(" ", 2)
             reply = self.makeAppointment(activity, self.datetimeConvert(dayMonthYear_Hour), address)
-        elif userInput.split(" ")[0] == 'créditos':
-            print("Entra pa dar créditos")
-            language, credits, activity, address = userInput.split(" ")
-            reply = self.giveCredits(address, activity, credits)
 
         # TODO: Accept double spaces if present...
         # address in WA this is the
