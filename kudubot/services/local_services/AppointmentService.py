@@ -468,6 +468,8 @@ class AppointmentService(Service):
             current_field += 1
 
             message = self.update_draft(event, user_id, current_field)
+        else:
+            message = ":)"
         return message
 
 
