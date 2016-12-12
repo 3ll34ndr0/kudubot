@@ -115,7 +115,7 @@ class AppointmentService(Service):
                 Consulta de saldo
                 """
                 credits, expireDate = hasCredit(address, activity)
-                reply = "{}\nCréditos disponibles para {}: {} hasta el {}".format(activity,credits, expireDate.strftime("%d %h %Y"))
+                reply = "Créditos disponibles para *{}*: {} hasta el {}".format(activity,credits, expireDate.strftime("%d %h %Y"))
 
             else:
                 language, credits, activity, address = userInput.split(" ")
