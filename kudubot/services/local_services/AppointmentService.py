@@ -110,7 +110,7 @@ class AppointmentService(Service):
         elif userInput.split(" ")[0] == 'créditos':
             print("Entra pa dar créditos")
             if len(userInput.split(" "))==2:
-                activity = userInput.split(" ")[1]
+                language, activity = userInput.split(" ")
                 """
                 Consulta de saldo
                 """
