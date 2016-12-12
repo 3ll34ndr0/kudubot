@@ -222,9 +222,9 @@ class AppointmentService(Service):
                     if saldo >= 0:
                         message = "{}\nCréditos disponibles para {}: {} hasta el {}".format(pulgarAlto,activity,saldo, expireDate.strftime("%d %h %Y"))
                         authorized = True
-                else:
-                     message = "Sin créditos para realizar esta reserva."
-                     authorized = False
+                    else:
+                        message = "Sin créditos para realizar esta reserva."
+                        authorized = False
             if act.prePay is False or authorized:
                 try:
                     apptmnt.enrolled.append(MakeAppointment(participant))
