@@ -452,8 +452,8 @@ SALIDA LLEGADA EMPRESA
 20:10	00:20	   *RAPIDO TATA* _Excepto Sabado y Domingo_
 23:55	04:05	   *FLECHA BUS* _Solo Lunes_
 """, '#santa fe-concordia': """SALIDA LLEGADA EMPRESA
-01:20	06:10	   *ZENIT*
+01:20	06:10	   *ZENIT* _Excepto Domingo_
 12:40	17:30	   *RAPIDO TATA*
-21:15	01:30	   *EXPRESO SINGER*
-23:10	04:05	   *FLECHA BUS*
+21:15	01:30	   *EXPRESO SINGER* _Excepto Sabado_
+23:10	04:05	   *FLECHA BUS* _Excepto Sabado_
 """,}
