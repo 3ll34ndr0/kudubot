@@ -80,7 +80,8 @@ class AppointmentService(Service):
                    "reservas"   : "es",
                    "reserva"    : "es",
                    "asistencias": "es",
-                   "asistencia" : "es"}
+                   "asistencia" : "es",
+                   "créditos"   : "es"}
 
     """
     Keywords for the appointment command
