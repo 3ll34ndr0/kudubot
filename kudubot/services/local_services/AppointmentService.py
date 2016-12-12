@@ -153,9 +153,6 @@ class AppointmentService(Service):
                 """
                 language, credits, activity, address = userInput.split(" ")
                 reply = giveCredits(address, activity, credits)
-        elif userInput=="acreditar":
-            language = userInput
-            reply = self.messageCredit(address, userInput)
 
         elif userInput.split(" ",1)[0] == 'turnos': # TODO:Avoid hardcoded Language
             language, date = userInput.split(" ",1)
@@ -201,6 +198,10 @@ class AppointmentService(Service):
         elif userInput.split(" ", 2)[0] == 'reservar':
             language, activity, dayMonthYear_Hour = userInput.split(" ", 2)
             reply = self.makeAppointment(activity, self.datetimeConvert(dayMonthYear_Hour), address)
+        else:
+            language = userInput
+            reply = self.messageCredit(address, userInput)
+
 
         # TODO: Accept double spaces if present...
         # address in WA this is the
