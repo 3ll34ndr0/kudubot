@@ -146,11 +146,11 @@ class AppointmentService(Service):
         elif userInput.split(" ", 2)[0] == 'cancelar':
             language, activity, dayMonthYear_Hour = userInput.split(" ", 2)
             reply = self.cancelAppointment(activity, self.datetimeConvert(dayMonthYear_Hour), address)
-
         elif userInput.split(" ", 2)[0] == 'reservar':
             language, activity, dayMonthYear_Hour = userInput.split(" ", 2)
             reply = self.makeAppointment(activity, self.datetimeConvert(dayMonthYear_Hour), address)
         elif userInput.split(" ")[0] == 'créditos':
+            print("Entra pa dar créditos")
             language, credits, activity, address = userInput.split(" ")
             reply = self.giveCredits(address, activity, credits)
 
