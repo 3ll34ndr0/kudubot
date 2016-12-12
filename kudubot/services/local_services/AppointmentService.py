@@ -431,11 +431,11 @@ def giveCredits(address: str, activity: str, credits: int) -> str:
     if usr is None:
         result = "No hay ningún usuario con ese teléfono"
     else:
+        act = db.session.query(Activity).filter_by(name=activity).one()
         creds = db.session.query(Credit).join('activity',).join('user').filter(
             Activity.name==activity).filter(
             User.wsaddress==usr.wsaddress).first()
         if creds is None:
-            act = db.session.query(Activity).filter_by(name=activity).one()
             creds = Credit(usr, act, credits)
             """
             First time credit is given
