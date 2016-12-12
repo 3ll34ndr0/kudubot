@@ -220,7 +220,7 @@ class AppointmentService(Service):
                 if activityCredits is not None:
                     saldo, expireDate = drawCredit(address,activity,1)
                     if saldo >= 0:
-                        message = "{}\nCréditos disponibles para {}: {} hasta el {}".format(pulgarAlto,activity,saldo, expireDate)
+                        message = "{}\nCréditos disponibles para {}: {} hasta el {}".format(pulgarAlto,activity,saldo, expireDate.strftime("%d %h %Y"))
                         authorized = True
                 else:
                      message = "Sin créditos para realizar esta reserva."
