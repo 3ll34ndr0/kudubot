@@ -455,7 +455,9 @@ class AppointmentService(Service):
 
     def messageCredit(self, user_id, userInput):
         text = userInput
+        print(self.store)
         draft = self.store.get_draft(user_id)
+        print(repr(draft))
 
         if draft:
             event = draft['event']
@@ -599,6 +601,7 @@ class TinyDBStore(object):
 
 
     def get_draft(self, user_id):
+        print("ENtra al get_draft\n")
         return self.drafts_db.get(Query().user_id == user_id)
 
 
