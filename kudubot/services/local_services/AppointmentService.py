@@ -420,26 +420,33 @@ def drawCredit(address: str, activity: str, credits: int) -> (int,datetime):
     return creds.credits,creds.expireDate
 
 def giveCredits(self, address: str, activity: str, credits: int) -> str:
-    creds =db.session.query(Credit).join('activity',).join('user').filter(Activity.name==activity).filter(User.wsaddress==address).first()
-    if creds is None:
-        act = db.session.query(Activity).filter_by(name=activity).one()
-        creds = Credit(user, act, credits)
-        """
-        First time credit is given
-        """
+    usr = User.query.filter_by(wsaddress=address).first()
+    if usr is None:
+        result = "No hay ningún usuario con ese teléfono"
     else:
-       creds.credits += credits
-       if creds.expireDate < datetime.utcnow():
-           creds.expireDate = datetime.utcnow() + timedelta(days=30)
-           """
-           30 days after now (if credits already expired)
-           """
-       else:
-           creds.expireDate += timedelta(days=30)
-           """
-           30 days after the current expire date
-           """
-    db.session.add(creds)
-    db.session.commit()
-    return "Ud. tiene {} créditos con vencimiento el día {}".format(creds.credits, creds.expireDate.strftime("%d %h %Y"))
+        creds = db.session.query(Credit).join('activity',).join('user').filter(
+            Activity.name==activity).filter(
+            User.wsaddress==usr.wsaddress).first()
+        if creds is None:
+            act = db.session.query(Activity).filter_by(name=activity).one()
+            creds = Credit(usr, act, credits)
+            """
+            First time credit is given
+            """
+        else:
+           creds.credits += credits
+           if creds.expireDate < datetime.utcnow():
+               creds.expireDate = datetime.utcnow() + timedelta(days=30)
+               """
+               30 days after now (if credits already expired)
+               """
+           else:
+               creds.expireDate += timedelta(days=30)
+               """
+               30 days after the current expire date
+               """
+        db.session.add(creds)
+        db.session.commit()
+        result = "Ud. tiene {} créditos con vencimiento el día {}".format(creds.credits, creds.expireDate.strftime("%d %h %Y"))
+    return result
 
