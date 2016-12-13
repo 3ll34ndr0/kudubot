@@ -527,6 +527,7 @@ class AppointmentService(Service):
         activity = event['activity']
         credits  = event['credits']
         address  = event['address']
+        print("DEEEEE BBBBBUUUU: {} {} {}".format(activity,credits,address))
         return giveCredits(address, activity, credits)
 
 # end of Lukaville code
@@ -553,14 +554,15 @@ def drawCredit(address: str, activity: str, credits: int) -> (int,datetime):
 
 def giveCredits(address: str, activity: str, credits: int) -> str:
     
-    if re.search(r"^BEGIN:VCARD.+", address):
+    if re.search(r"^BEGIN:VCARD", address):
         """
         VCARD detected!
         """
         address = parseVCard(address)
+        print("NEEEEBBBBAAAAAAAAAAAG: {}".format(address))
     usr = User.query.filter_by(wsaddress="{}@s.whatsapp.net".format(address)).first()
     query = db.session.query(User).filter(User.wsaddress.like(address))
-    print("DEE BUUUG: {}".format(query.all))
+    print("DEE BUUUG: {}".format(query.all()))
     """
     TODO: Buscar usando una expresión regular o algo más difuso...
     """
