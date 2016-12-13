@@ -550,6 +550,12 @@ def drawCredit(address: str, activity: str, credits: int) -> (int,datetime):
     return creds.credits,creds.expireDate
 
 def giveCredits(address: str, activity: str, credits: int) -> str:
+    
+    if re.search(r"^BEGIN:VCARD.+", address):
+    """
+    VCARD detected!
+    """
+        address = parseVCard(address)
     usr = User.query.filter_by(wsaddress="{}@s.whatsapp.net".format(address)).first()
     query = db.session.query(User).filter(User.wsaddress.like(address))
     print("DEE BUUUG: {}".format(query.all))
@@ -629,4 +635,11 @@ class TinyDBStore(object):
     def remove_draft(self, user_id):
         self.drafts_db.remove(Query().user_id == user_id)
 
-
+def parseVCard(vCard: str) -> str:
+	import vobject
+        import phonenumbers
+	v = vobject.readOne(vCard)
+        telNumber =  v.tel.value
+        p = phonenumbers.parse(v.tel.value) 
+        address = p.country_code+p.national_number
+        return address
