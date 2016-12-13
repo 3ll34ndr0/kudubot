@@ -169,7 +169,7 @@ class AppointmentService(Service):
         elif userInput == 'asistencia': # TODO:Avoid hardcoded Language
             language = userInput
             reply = self.attended(address)
-        elif userInput.split(" ")[0] == 'turno'
+        elif userInput.split(" ")[0] == 'turno':
             if len(userInput.split(" ") > 1:
                if userInput.split(" ")[1] == 'nuevo':# TODO:Avoid hardcoded Language
                    language, _, activity, dayMonthYear_Hour = userInput.split(" ", 3)
