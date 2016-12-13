@@ -169,33 +169,33 @@ class AppointmentService(Service):
         elif userInput == 'asistencia': # TODO:Avoid hardcoded Language
             language = userInput
             reply = self.attended(address)
-        elif userInput.split(" ", 2)[1] == 'nuevo':# TODO:Avoid hardcoded Language
+        elif userInput.split(" ")[1] == 'nuevo':# TODO:Avoid hardcoded Language
             language, _, activity, dayMonthYear_Hour = userInput.split(" ", 3)
             reply = self.createAppointment(activity,
                                            self.datetimeConvert(dayMonthYear_Hour),
                                            address, prePay=False)
-        elif userInput.split(" ", 2)[1] == 'prepago':# TODO:Avoid hardcoded Language
+        elif userInput.split(" ")[1] == 'prepago':# TODO:Avoid hardcoded Language
             language, _, activity, dayMonthYear_Hour = userInput.split(" ", 3)
             reply = self.createAppointment(activity,
                                            self.datetimeConvert(dayMonthYear_Hour),
                                            address, prePay=True)
-        elif userInput.split(" ", 2)[0] == 'borrar':
+        elif userInput.split(" ")[0] == 'borrar':
             print("DEBUG: {}".format(userInput.split(" ", 2)))
             language, activity, dayMonthYear_Hour = userInput.split(" ", 2)
             reply = self.deleteAppointment(activity,
                                            self.datetimeConvert(dayMonthYear_Hour),
                                            address)
             print("DEBUG: {}".format(reply))
-        elif userInput.split(" ", 2)[1] == 'almacen':
+        elif userInput.split(" ")[1] == 'almacen':
             language, _, databaseName = userInput.split(" ", 2)
             if Authenticator(self.connection.identifier).is_from_admin(message):
                 reply = self.setupDB(databaseName, address)
             else:
                 reply = "UR Not allowed 2 do this"
-        elif userInput.split(" ", 2)[0] == 'cancelar':
+        elif userInput.split(" ")[0] == 'cancelar':
             language, activity, dayMonthYear_Hour = userInput.split(" ", 2)
             reply = self.cancelAppointment(activity, self.datetimeConvert(dayMonthYear_Hour), address)
-        elif userInput.split(" ", 2)[0] == 'reservar':
+        elif userInput.split(" ")[0] == 'reservar':
             language, activity, dayMonthYear_Hour = userInput.split(" ", 2)
             reply = self.makeAppointment(activity, self.datetimeConvert(dayMonthYear_Hour), address)
         else:
