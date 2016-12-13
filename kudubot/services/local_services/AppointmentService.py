@@ -516,7 +516,11 @@ class AppointmentService(Service):
         print(event)
         self.store.remove_draft(user_id)
         # Puesta a cero de la 'memoria'
-        return(repr(event))
+        activity = event['activity']
+        credits  = event['credits']
+        address  = event['address']
+        return giveCredits(address, activity, credits)
+
 # end of Lukaville code
 #######################################################################
 
