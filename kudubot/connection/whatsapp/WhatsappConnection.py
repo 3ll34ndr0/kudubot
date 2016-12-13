@@ -126,6 +126,10 @@ class WhatsappConnection(YowsupEchoLayer, Connection):
         if message_protocol_entity.getType() == "text":
             message = self.convert_text_message_protocol_entity_to_message(message_protocol_entity)
             self.on_incoming_message(message)
+        elif message_protocol_entity.getType() == "media":
+            message = self.onMediaMessage(message_protocol_entity)
+            self.on_incoming_message(message)
+
 
     @staticmethod
     def convert_text_message_protocol_entity_to_message(message_protocol_entity: TextMessageProtocolEntity) -> Message:
@@ -153,6 +157,34 @@ class WhatsappConnection(YowsupEchoLayer, Connection):
 
         return Message(message_body=body, message_title="", address=sender_number, incoming=True, name=sender_name,
                        single_address=individual_number, single_name=individual_name, group=group, timestamp=timestamp)
+
+    @staticmethod
+    def onMediaMessage(message_protocol_entity: TextMessageProtocolEntity) -> Message:
+        if message_protocol_entity.getMediaType() == "image":
+            body =  message_protocol_entity.url          
+        elif message_protocol_entity.getMediaType() == "location":
+            body = "Latitud: {} Longitud: {}".format(message_protocol_entity.getLatitude(), messageProtocolEntity.getLongitude())
+        elif message_protocol_entity.getMediaType() == "vcard":
+            body = message_protocol_entity.getCardData()
+
+        sender_number = message_protocol_entity.getFrom(True)
+        group_identifier = message_protocol_entity.getFrom(False)
+        sender_name = message_protocol_entity.getNotify()
+        group = False
+        individual_number = ""
+        individual_name = ""
+
+        timestamp = float(message_protocol_entity.getTimestamp())
+
+        if re.search(r"[0-9]+-[0-9]+", group_identifier):
+            group = True
+            individual_number = message_protocol_entity.getParticipant(True)
+            individual_name = message_protocol_entity.getNotify()
+
+        return Message(message_body=body, message_title="", address=sender_number, incoming=True, name=sender_name,
+                       single_address=individual_number, single_name=individual_name, group=group, timestamp=timestamp)
+
+
 
     @staticmethod
     def convert_message_to_text_message_protocol_entity(message: Message) -> TextMessageProtocolEntity:
