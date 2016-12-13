@@ -198,6 +198,10 @@ class AppointmentService(Service):
         elif userInput.split(" ")[0] == 'reservar':
             language, activity, dayMonthYear_Hour = userInput.split(" ", 2)
             reply = self.makeAppointment(activity, self.datetimeConvert(dayMonthYear_Hour), address)
+        elif userInput == 'acreditar'
+            language = userInput
+            self.store.new_draft(address)
+            reply = "Envie el contacto o número de teléfono a acreditar"
         else:
             language = 'acreditar'
             reply = self.messageCredit(address, userInput)
@@ -471,8 +475,7 @@ class AppointmentService(Service):
 
             message = self.update_draft(event, user_id, current_field)
         else:
-            self.store.new_draft(user_id)
-            message = "Let's create a new event. First, send me name of the event."
+            message = "."
         return message
 
 
