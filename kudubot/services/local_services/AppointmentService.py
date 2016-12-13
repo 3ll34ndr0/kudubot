@@ -170,7 +170,7 @@ class AppointmentService(Service):
             language = userInput
             reply = self.attended(address)
         elif userInput.split(" ")[0] == 'turno':
-            if len(userInput.split(" ") > 1:
+            if len(userInput.split(" ")) > 1:
                if userInput.split(" ")[1] == 'nuevo':# TODO:Avoid hardcoded Language
                    language, _, activity, dayMonthYear_Hour = userInput.split(" ", 3)
                    reply = self.createAppointment(activity,
