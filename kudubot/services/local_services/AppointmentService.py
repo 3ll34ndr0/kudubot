@@ -646,5 +646,5 @@ def parseVCard(vCard: str) -> str:
         telNumber =  v.tel.value
         p = phonenumbers.parse(v.tel.value)
         print("DEBUG: Ante nada: {} {}".format(p.country_code,p.national_number)
-        address = "{}{}".format(p.country_code,p.national_number)
+        address = str(p.country_code)+str(p.national_number)
         return address
