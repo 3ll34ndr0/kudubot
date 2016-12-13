@@ -479,7 +479,7 @@ class AppointmentService(Service):
             current_field = draft['current_field']
             field = FIELDS[current_field]
 
-            if field['name']!='address' # To avoid lowercasing the VCARD
+            if field['name']!='address': # To avoid lowercasing the VCARD
                 text = text.lower() 
             event[field['name']] = text
             current_field += 1
