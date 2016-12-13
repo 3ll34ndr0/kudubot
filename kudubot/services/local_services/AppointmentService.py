@@ -190,8 +190,8 @@ class AppointmentService(Service):
 #            language, _, databaseName = userInput.split(" ", 2)
 #            if Authenticator(self.connection.identifier).is_from_admin(message):
 #                reply = self.setupDB(databaseName, address)
-            else:
-                reply = "UR Not allowed 2 do this"
+#            else:
+#                reply = "UR Not allowed 2 do this"
         elif userInput.split(" ")[0] == 'cancelar':
             language, activity, dayMonthYear_Hour = userInput.split(" ", 2)
             reply = self.cancelAppointment(activity, self.datetimeConvert(dayMonthYear_Hour), address)
