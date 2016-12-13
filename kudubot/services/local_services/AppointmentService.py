@@ -644,6 +644,7 @@ def parseVCard(vCard: str) -> str:
         import vobject
         v = vobject.readOne(vCard)
         telNumber =  v.tel.value
-        p = phonenumbers.parse(v.tel.value) 
-        address = p.country_code+p.national_number
+        p = phonenumbers.parse(v.tel.value)
+        print("DEBUG: Ante nada: {} {}".format(p.country_code,p.national_number)
+        address = "{}{}".format(p.country_code,p.national_number)
         return address
