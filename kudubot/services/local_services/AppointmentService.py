@@ -640,8 +640,8 @@ class TinyDBStore(object):
         self.drafts_db.remove(Query().user_id == user_id)
 
 def parseVCard(vCard: str) -> str:
-        import vobject
         import phonenumbers
+        import vobject
         v = vobject.readOne(vCard)
         telNumber =  v.tel.value
         p = phonenumbers.parse(v.tel.value) 
