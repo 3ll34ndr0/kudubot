@@ -552,9 +552,9 @@ def drawCredit(address: str, activity: str, credits: int) -> (int,datetime):
 def giveCredits(address: str, activity: str, credits: int) -> str:
     
     if re.search(r"^BEGIN:VCARD.+", address):
-    """
-    VCARD detected!
-    """
+        """
+        VCARD detected!
+        """
         address = parseVCard(address)
     usr = User.query.filter_by(wsaddress="{}@s.whatsapp.net".format(address)).first()
     query = db.session.query(User).filter(User.wsaddress.like(address))
