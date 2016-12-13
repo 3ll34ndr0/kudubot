@@ -212,10 +212,13 @@ class AppointmentService(Service):
         #be telephoneNumber with the @s.whatsapp.net ...
 
         self.connection.last_used_language = self.appointment[language]
-        print("DEBUG: {} is of type {}.\n Language is {}".format(reply,type(reply),self.appointment[language]))
+#        print("DEBUG: {} is of type {}.\n Language is {}".format(reply,type(reply),self.appointment[language]))
 #        self.connection.last_used_timezone = tz
-        reply_message = self.generate_reply_message(message, "Appointments...", reply)
-        self.send_text_message(reply_message)
+        if reply == "":
+            pass
+        else:
+            reply_message = self.generate_reply_message(message, "Appointments...", reply)
+            self.send_text_message(reply_message)
 
     @staticmethod
     def regex_check(message: Message) -> bool:
