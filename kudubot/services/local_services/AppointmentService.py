@@ -206,7 +206,7 @@ class AppointmentService(Service):
             reply = "Envie el contacto o número de teléfono a acreditar"
         else:
             language = 'acreditar'
-            reply = self.messageCredit(address, userInput)
+            reply = self.messageCredit(address, message.message_body)
 
 
         # TODO: Accept double spaces if present...
@@ -479,6 +479,8 @@ class AppointmentService(Service):
             current_field = draft['current_field']
             field = FIELDS[current_field]
 
+            if field['name']!='address' # To avoid lowercasing the VCARD
+                text = text.lower() 
             event[field['name']] = text
             current_field += 1
 
