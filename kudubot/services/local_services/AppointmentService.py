@@ -475,7 +475,7 @@ class AppointmentService(Service):
 
             message = self.update_draft(event, user_id, current_field)
         else:
-            message = "\n"
+            message = ""
         return message
 
 
