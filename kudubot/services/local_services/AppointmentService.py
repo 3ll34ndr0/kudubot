@@ -169,16 +169,18 @@ class AppointmentService(Service):
         elif userInput == 'asistencia': # TODO:Avoid hardcoded Language
             language = userInput
             reply = self.attended(address)
-        elif userInput == 'turno nuevo':# TODO:Avoid hardcoded Language
-            language, _, activity, dayMonthYear_Hour = userInput.split(" ", 3)
-            reply = self.createAppointment(activity,
-                                           self.datetimeConvert(dayMonthYear_Hour),
-                                           address, prePay=False)
-        elif userInput == 'turno prepago':# TODO:Avoid hardcoded Language
-            language, _, activity, dayMonthYear_Hour = userInput.split(" ", 3)
-            reply = self.createAppointment(activity,
-                                           self.datetimeConvert(dayMonthYear_Hour),
-                                           address, prePay=True)
+        elif userInput.split(" ")[0] == 'turno'
+            if len(userInput.split(" ") > 1:
+               if userInput.split(" ")[1] == 'nuevo':# TODO:Avoid hardcoded Language
+                   language, _, activity, dayMonthYear_Hour = userInput.split(" ", 3)
+                   reply = self.createAppointment(activity,
+                                self.datetimeConvert(dayMonthYear_Hour),
+                                address, prePay=False)
+               elif userInput.split(" ")[1] == 'prepago':# TODO:Avoid hardcoded Language
+                   language, _, activity, dayMonthYear_Hour = userInput.split(" ", 3)
+                   reply = self.createAppointment(activity,
+                                self.datetimeConvert(dayMonthYear_Hour),
+                                address, prePay=True)
         elif userInput.split(" ")[0] == 'borrar':
             print("DEBUG: {}".format(userInput.split(" ", 2)))
             language, activity, dayMonthYear_Hour = userInput.split(" ", 2)
@@ -297,7 +299,11 @@ class AppointmentService(Service):
         apptmnt = db.session.query(Appointment).filter_by(initHour=initHour).filter_by(activity=act).first()
         participant = db.session.query(User).filter_by(wsaddress=address).one()
         print("Vamos a ver si {} tiene un turno en {} el {}".format(participant.name, apptmnt, initHour))
-        subs = db.session.query(Appointment).join('enrolled','user').filter(User.name==participant.name).filter(Appointment.initHour==initHour).all()
+        subs = db.session.query(Appointment).join(
+            'enrolled','user').join('activity').filter(
+                User.name==participant.name).filter(
+                    Appointment.initHour==initHour).filter(
+                        Activity.name==activity).first()
         print(repr(subs))
         #TODO: Chequear, meparece que le falta la condición de actividadtambién
         return repr(subs) 
