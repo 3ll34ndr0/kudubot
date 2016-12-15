@@ -299,7 +299,7 @@ class AppointmentService(Service):
 #        act = db.session.query(Activity).filter_by(name=activity).first()
 #        apptmnt = db.session.query(Appointment).filter_by(initHour=initHour).filter_by(activity=act).first()
         participant = db.session.query(User).filter_by(wsaddress=address).first()
-        print("Vamos a ver si {} tiene un turno en {} el {}".format(participant.name, apptmnt, initHour))
+        print("Vamos a ver si {} tiene un turno en {} el {}".format(participant.name, activity, initHour))
         apptmnt = db.session.query(Appointment).join(
             'enrolled','user').join('activity').filter(
                 User.name==participant.name).filter(
