@@ -295,18 +295,32 @@ class AppointmentService(Service):
         return message
     def cancelAppointment(self, activity: str, initHour: datetime, address: str) -> str:
         print("Is registered user?: {}".format(self.isRegisteredUser(address)))
-        act = db.session.query(Activity).filter_by(name=activity).one()
-        apptmnt = db.session.query(Appointment).filter_by(initHour=initHour).filter_by(activity=act).first()
-        participant = db.session.query(User).filter_by(wsaddress=address).one()
+        pulgarAlto = "👍🏼"
+#        act = db.session.query(Activity).filter_by(name=activity).first()
+#        apptmnt = db.session.query(Appointment).filter_by(initHour=initHour).filter_by(activity=act).first()
+        participant = db.session.query(User).filter_by(wsaddress=address).first()
         print("Vamos a ver si {} tiene un turno en {} el {}".format(participant.name, apptmnt, initHour))
-        subs = db.session.query(Appointment).join(
+        apptmnt = db.session.query(Appointment).join(
             'enrolled','user').join('activity').filter(
                 User.name==participant.name).filter(
                     Appointment.initHour==initHour).filter(
                         Activity.name==activity).first()
-        print(repr(subs))
+        if apptmnt is None:
+            message = "Ud. no tiene ninguna reserva para *{}* el {}".format(activity, initHour)
+        else:
+           toCancel = db.session.query(MakeAppointment).filter_by(
+                           id_appointment=subs.id,id_user=participant.id).join('user').first()
+           try:
+               db.session.delete(toCancel)
+               db.session.commit()
+               message = pulgarAlto
+           except:
+               db.session.rollback()
+               message = "..." #TODO: Verdadero error
+          
+        print(repr(apptmnt))
         #TODO: Chequear, meparece que le falta la condición de actividadtambién
-        return repr(subs) 
+        return message 
 
     def datetimeConvert(self,dayMonthYear_Hour: str) -> datetime:
         #Will convert human date time to datetime object:
