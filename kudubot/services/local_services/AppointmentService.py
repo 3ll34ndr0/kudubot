@@ -309,7 +309,7 @@ class AppointmentService(Service):
             message = "Ud. no tiene ninguna reserva para *{}* el {}".format(activity, initHour)
         else:
            toCancel = db.session.query(MakeAppointment).filter_by(
-                           id_appointment=subs.id,id_user=participant.id).join('user').first()
+                           id_appointment=apptmnt.id,id_user=participant.id).join('user').first()
            try:
                db.session.delete(toCancel)
                db.session.commit()
