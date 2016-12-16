@@ -27,6 +27,9 @@ locale.setlocale(locale.LC_ALL,'es_AR.utf8')
 from tinydb import TinyDB, Query
 #CI
 
+# TODO: This should be in a config file, or in database
+cancelPolicyMins = 5
+
 # Guardo aca algunos métodos de pytz pa no olvidarme.
 # country_timezones('ar') tira una lista de los horarios de cada pais, en este caso Argentina.
 #horarioCordoba = pytz.timezone('America/Argentina/Cordoba')
@@ -307,6 +310,8 @@ class AppointmentService(Service):
                         Activity.name==activity).first()
         if apptmnt is None:
             message = "Ud. no tiene ninguna reserva para *{}* el {}".format(activity, initHour)
+        elif datetime.utcnow() + timedelta(minutes=cancelPolicyMins) > apptmnt.initHour:
+            message = "La política de cancelación de turno no permite cancelar con tan poca anticipación"
         else:
            toCancel = db.session.query(MakeAppointment).filter_by(
                            id_appointment=apptmnt.id,id_user=participant.id).join('user').first()
@@ -608,7 +613,10 @@ def giveCredits(address: str, activity: str, credits: int) -> str:
                30 days after now (if credits already expired)
                """
            else:
+               extraDays = creds.expireDate - datetime.utcnow()
+#               if extraDays 
                creds.expireDate += timedelta(days=30)
+
                """
                30 days after the current expire date
                """
