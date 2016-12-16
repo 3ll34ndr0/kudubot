@@ -405,6 +405,7 @@ class AppointmentService(Service):
         """
         Will check if the sender is not registered as a user.
         """
+        print("Is registered user?: {}".format(address))
 
         addressbook = os.path.join(LocalConfigChecker.contacts_directory, self.connection.identifier, "addressbook.db")
         """
