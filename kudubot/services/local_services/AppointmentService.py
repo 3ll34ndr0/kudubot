@@ -296,7 +296,7 @@ class AppointmentService(Service):
     def cancelAppointment(self, activity: str, initHour: datetime, address: str) -> str:
         print("Is registered user?: {}".format(self.isRegisteredUser(address)))
         pulgarAlto = "👍🏼"
-#        act = db.session.query(Activity).filter_by(name=activity).first()
+        act = db.session.query(Activity).filter_by(name=activity).first()
 #        apptmnt = db.session.query(Appointment).filter_by(initHour=initHour).filter_by(activity=act).first()
         participant = db.session.query(User).filter_by(wsaddress=address).first()
         print("Vamos a ver si {} tiene un turno en {} el {}".format(participant.name, activity, initHour))
@@ -310,6 +310,12 @@ class AppointmentService(Service):
         else:
            toCancel = db.session.query(MakeAppointment).filter_by(
                            id_appointment=apptmnt.id,id_user=participant.id).join('user').first()
+
+           if act.prePay:
+                saldo, expireDate = drawCredit(address,activity,-1)
+                """
+                Give back one credit
+                """
            try:
                db.session.delete(toCancel)
                db.session.commit()
@@ -559,6 +565,8 @@ def drawCredit(address: str, activity: str, credits: int) -> (int,datetime):
     Draw credits and returns saldo and expire date. It does not commit the
     change to database, it relays on the actual appointment process which will
     be done after this action.
+    This method is also used to give back the credits when appointment is
+    canceled, by passing a negative number as credit.
     """
     creds =db.session.query(Credit).join('activity',).join('user').filter(Activity.name==activity).filter(User.wsaddress==address).first()
     creds.credits -= credits
