@@ -38,7 +38,7 @@ cancelPolicyMins = 5
 from manager import ManageAppointments
 
 #Start of CI
-FIELDS = [
+creditMenu = [
         {
                     'name': 'address',
                     'message': 'Enviame el contacto a quien se le darán los créditos',
@@ -60,6 +60,26 @@ FIELDS = [
 #                            'required': False
 #                },
                 ]
+registerMenu = [
+        {
+                    'name': 'address',
+                    'message': 'Enviame el contacto a registrar',
+                    'required': True
+                },
+                {
+                    'name': 'familyName',
+                    'message': 'Apellido:',
+                    'required': True
+                },
+                {
+                    'name': 'name',
+                    'message': 'Nombre:',
+                    'required': True
+                },
+                ]
+
+menu = {'credit':   creditMenu,
+        'register': registerMenu}
 #End of #CI
 
 class AppointmentService(Service):
@@ -209,7 +229,7 @@ class AppointmentService(Service):
             reply = "Envie el contacto o número de teléfono a acreditar"
         else:
             language = 'acreditar'
-            reply = self.messageCredit(address, message.message_body)
+            reply = self.messageCredit(address, message.message_body, creditMenu)
 
 
         # TODO: Accept double spaces if present...
@@ -494,7 +514,7 @@ class AppointmentService(Service):
 # Get a copy from the licence:
 # https://github.com/lukaville/create-event-bot/blob/master/LICENSE
 
-    def messageCredit(self, user_id, userInput):
+    def messageCredit(self, user_id, userInput, FIELDS):
         text = userInput
         print(self.store)
         draft = self.store.get_draft(user_id)
@@ -505,18 +525,18 @@ class AppointmentService(Service):
             current_field = draft['current_field']
             field = FIELDS[current_field]
 
-            if field['name']!='address': # To avoid lowercasing the VCARD
+            if (field['name']!='address' and field['name']!='familyName'): # To avoid lowercasing the VCARD
                 text = text.lower() 
             event[field['name']] = text
             current_field += 1
 
-            message = self.update_draft(event, user_id, current_field)
+            message = self.update_draft(event, user_id, current_field, FIELDS)
         else:
             message = ""
         return message
 
 
-    def skip_command(self, user_id):
+    def skip_command(self, user_id, FIELDS):
         draft = self.store.get_draft(user_id)
 
         if draft:
@@ -528,11 +548,11 @@ class AppointmentService(Service):
             else:
                 event = draft['event']
                 current_field += 1
-                message = self.update_draft(event, user_id, current_field)
+                message = self.update_draft(event, user_id, current_field, FIELDS)
             return message
 
 
-    def update_draft(self, event, user_id, current_field):
+    def update_draft(self, event, user_id, current_field, FIELDS):
         self.store.update_draft(user_id, event, current_field)
 
         if current_field <= len(FIELDS) - 1:
