@@ -176,9 +176,12 @@ class AppointmentService(Service):
             if len(userInput.split(" ")) > 1:
                if userInput.split(" ")[1] == 'nuevo':# TODO:Avoid hardcoded Language
                    language, _, activity, dayMonthYear_Hour = userInput.split(" ", 3)
-                   reply = self.createAppointment(activity,
+                   if Authenticator(self.connection.identifier).is_from_admin(message):
+                       reply = self.createAppointment(activity,
                                 self.datetimeConvert(dayMonthYear_Hour),
                                 address, prePay=False)
+                   else:
+                       reply = "Ud. no tiene permiso para esta operación"
                elif userInput.split(" ")[1] == 'prepago':# TODO:Avoid hardcoded Language
                    language, _, activity, dayMonthYear_Hour = userInput.split(" ", 3)
                    reply = self.createAppointment(activity,
