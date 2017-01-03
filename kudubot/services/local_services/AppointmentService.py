@@ -22,7 +22,7 @@ tz = "America/Argentina/Cordoba" #TODO: Avoid hardcoded values
 from pytz import country_timezones
 import locale
 locale.setlocale(locale.LC_ALL,'es_AR.utf8')
-### 
+###
 # Implementación de comandos interactivos #CI:
 from tinydb import TinyDB, Query
 #CI
@@ -499,7 +499,7 @@ class AppointmentService(Service):
             message +="{}:\n".format(ap)
             for a in ap.enrolled:
                 message +="{} ({})\n".format(a.user.name,
-                                           a.user.wsaddress.rstrip("@s.whatsapp.net"))
+                                           a.user.wsaddress.lstrip('549').rstrip("@s.whatsapp.net"))
         return message
 
 
