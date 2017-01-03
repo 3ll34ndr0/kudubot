@@ -166,7 +166,7 @@ class AppointmentService(Service):
         elif userInput == 'reservas': # TODO:Avoid hardcoded Language
             language = userInput
             if Authenticator(self.connection.identifier).is_from_admin(message):
-                pass
+                reply = self.allBooked()
             else:
                 reply = self.booked(address)
         elif userInput == 'asistencias': # TODO:Avoid hardcoded Language
@@ -491,7 +491,7 @@ class AppointmentService(Service):
                 message +="{}\n".format(ap)
         return message
 
-    def allBooked(self, address: str) -> str:
+    def allBooked(self) -> str:
         allApps = db.session.query(Appointment).join('enrolled','user').filter(
                  Appointment.initHour > datetime.utcnow())
         message ="Reservas:\n"
