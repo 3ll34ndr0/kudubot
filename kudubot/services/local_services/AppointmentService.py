@@ -498,11 +498,11 @@ class AppointmentService(Service):
         for ap in allApps:
             message +="{}:\n".format(ap)
             for a in ap.enrolled:
-                message +="{} ({})".format(a.user.name,
+                message +="{} ({})\n".format(a.user.name,
                                            a.user.wsaddress.rstrip("@s.whatsapp.net"))
         return message
 
- 
+
     def attended(self, address: str) -> str:
         allApps = db.session.query(Appointment).join('enrolled','user').filter(
                  User.wsaddress==address).filter(
