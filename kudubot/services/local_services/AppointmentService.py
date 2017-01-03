@@ -165,7 +165,10 @@ class AppointmentService(Service):
             reply = self.booked(address)
         elif userInput == 'reservas': # TODO:Avoid hardcoded Language
             language = userInput
-            reply = self.booked(address)
+            if Authenticator(self.connection.identifier).is_from_admin(message):
+                pass
+            else:
+                reply = self.booked(address)
         elif userInput == 'asistencias': # TODO:Avoid hardcoded Language
             language = userInput
             reply = self.attended(address)
@@ -184,15 +187,23 @@ class AppointmentService(Service):
                        reply = "Ud. no tiene permiso para esta operación"
                elif userInput.split(" ")[1] == 'prepago':# TODO:Avoid hardcoded Language
                    language, _, activity, dayMonthYear_Hour = userInput.split(" ", 3)
-                   reply = self.createAppointment(activity,
+                   if Authenticator(self.connection.identifier).is_from_admin(message):
+                        reply = self.createAppointment(activity,
                                 self.datetimeConvert(dayMonthYear_Hour),
                                 address, prePay=True)
+                   else:
+                        reply = "Ud. no tiene permiso para esta operación"
+
         elif userInput.split(" ")[0] == 'borrar':
             print("DEBUG: {}".format(userInput.split(" ", 2)))
             language, activity, dayMonthYear_Hour = userInput.split(" ", 2)
-            reply = self.deleteAppointment(activity,
+            if Authenticator(self.connection.identifier).is_from_admin(message):
+                reply = self.deleteAppointment(activity,
                                            self.datetimeConvert(dayMonthYear_Hour),
                                            address)
+            else:
+                reply = "Ud. no tiene permiso para esta operación"
+
             print("DEBUG: {}".format(reply))
 #        elif userInput.split(" ")[1] == 'almacen':
 #            language, _, databaseName = userInput.split(" ", 2)
@@ -208,8 +219,11 @@ class AppointmentService(Service):
             reply = self.makeAppointment(activity, self.datetimeConvert(dayMonthYear_Hour), address)
         elif userInput == 'acreditar':
             language = userInput
-            self.store.new_draft(address)
-            reply = "Envie el contacto o número de teléfono a acreditar"
+            if Authenticator(self.connection.identifier).is_from_admin(message):
+                self.store.new_draft(address)
+                reply = "Envie el contacto o número de teléfono a acreditar"
+            else:
+                reply = "Ud. no tiene permiso para esta operación"
         else:
             language = 'acreditar'
             reply = self.messageCredit(address, message.message_body)
@@ -477,6 +491,17 @@ class AppointmentService(Service):
                 message +="{}\n".format(ap)
         return message
 
+    def allBooked(self, address: str) -> str:
+        allApps = db.session.query(Appointment).join('enrolled','user').filter(
+                 Appointment.initHour > datetime.utcnow())
+        message ="Reservas:\n"
+        for ap in allApps:
+            message +="{}:\n".format(ap)
+            for a in ap.enrolled:
+                message +="{} ".format(a.user.name)
+        return message
+
+ 
     def attended(self, address: str) -> str:
         allApps = db.session.query(Appointment).join('enrolled','user').filter(
                  User.wsaddress==address).filter(
